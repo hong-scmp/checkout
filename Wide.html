@@ -2362,8 +2362,9 @@
         const email = options.email
           ? `<span class="completed-email">${state.email || "abc@abc.com"}</span>`
           : "";
+        const changeAction = options.action || "edit-account";
         const change = options.change
-          ? `<button type="button" class="link-button" data-action="edit-account">${options.change}</button>`
+          ? `<button type="button" class="link-button" data-action="${changeAction}">${options.change}</button>`
           : "";
         return `
           <div class="section-head${disabled}">
@@ -2743,7 +2744,7 @@
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
           </section>
           <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change" })}
+            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
             <div class="card-body">
               <div class="payment-fields">
                 <div>
@@ -2805,7 +2806,7 @@
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
           </section>
           <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change" })}
+            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
             <div class="card-body">
               <div class="skeleton-area">
                 <span class="skel line"></span>
@@ -2829,7 +2830,7 @@
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
           </section>
           <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change" })}
+            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
             <div class="card-body">
               <div class="skeleton-area">
                 <div>
@@ -2868,7 +2869,7 @@
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
           </section>
           <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change" })}
+            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
             <div class="card-body">
               <div class="payment-fields">
                 <div>
@@ -3077,6 +3078,7 @@
           }, 1700);
         }
         if (action === "edit-account") setScreen("account", { email: "", password: "", passwordVisible: false, invalidEmail: false });
+        if (action === "change-payment") setScreen("paymentMethod");
         if (action === "forgot") setScreen("forgot");
         if (action === "back-password") setScreen("password");
         if (action === "toggle-password") setScreen("password", { passwordVisible: !state.passwordVisible });

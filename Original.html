@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Subscription 3.0 Checkout Prototype - Side Summary</title>
+    <title>Subscription 3.0 Checkout Prototype</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&amp;family=Roboto+Condensed:wght@400;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
@@ -162,21 +162,16 @@
       }
 
       .shell {
-        width: min(100%, 656px);
-        padding: 8px 8px 0;
-      }
-
-      .checkout.side-summary.summary-layout .shell {
-        width: min(100%, 1048px);
-        padding-inline: 16px;
+        width: min(100%, 560px);
+        padding: 8px 40px 0;
       }
 
       .plan {
         width: 100%;
-        max-width: 640px;
+        max-width: 480px;
         margin: 0 auto 8px;
         background: var(--white);
-        border: 0;
+        border: 1px solid var(--grey-200);
         border-radius: 8px;
         padding: 16px;
       }
@@ -430,25 +425,17 @@
       }
 
       .flow {
-        max-width: 640px;
+        max-width: 480px;
         margin: 0 auto;
-        border: 0;
+        border: 1px solid var(--grey-200);
         border-radius: 8px;
         overflow: hidden;
-        background: transparent;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
-
-      .checkout.side-summary.summary-layout .flow {
-        width: 100%;
+        background: var(--white);
       }
 
       .panel {
         background: var(--white);
-        border-bottom: 0;
-        border-radius: 8px;
+        border-bottom: 1px solid var(--bluegrey-100);
         padding: 16px;
       }
 
@@ -537,7 +524,6 @@
 
       .card-body {
         margin-top: 24px;
-        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1309,18 +1295,9 @@
 
       .method-list {
         width: 100%;
-        max-width: 360px;
-        margin: 0 auto;
         border: 1px solid var(--grey-250);
         border-radius: 8px;
         overflow: hidden;
-      }
-
-      .payment-choice-body {
-        width: 100%;
-        max-width: 360px;
-        margin-left: auto;
-        margin-right: auto;
       }
 
       .method-row {
@@ -1473,8 +1450,6 @@
 
       .payment-fields {
         width: 100%;
-        max-width: 544px;
-        margin: 0 auto;
         display: grid;
         gap: 24px;
       }
@@ -1658,8 +1633,6 @@
 
       .promo {
         width: 100%;
-        max-width: 544px;
-        margin: 0 auto;
         border: 0;
         border-top: 1px dashed var(--grey-200);
         border-bottom: 1px dashed var(--grey-200);
@@ -1674,8 +1647,6 @@
         display: grid;
         gap: 8px;
         width: 100%;
-        max-width: 544px;
-        margin: 0 auto;
       }
 
       .promo-entry {
@@ -1784,13 +1755,18 @@
         display: grid;
         gap: 16px;
         width: 100%;
-        max-width: 544px;
-        margin: 0 auto;
       }
 
-      .purchase .cta {
-        max-width: 360px;
-        justify-self: center;
+      .summary {
+        margin: 0;
+        padding-left: 21px;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 400;
+      }
+
+      .summary li {
+        margin-bottom: 4px;
       }
 
       .renewal {
@@ -1933,8 +1909,6 @@
         display: grid;
         gap: 24px;
         width: 100%;
-        max-width: 544px;
-        margin: 0 auto;
       }
 
       .account-loading-panel {
@@ -2038,53 +2012,6 @@
         display: none !important;
       }
 
-      @media (min-width: 900px) {
-        .checkout.side-summary.summary-layout .shell {
-          display: grid;
-          grid-template-columns: minmax(0, 640px) 360px;
-          align-items: stretch;
-          gap: 16px;
-        }
-
-        .checkout.side-summary.summary-layout .plan {
-          grid-column: 2;
-          grid-row: 1;
-          align-self: stretch;
-          display: flex;
-          flex-direction: column;
-          max-width: none;
-          min-height: 100%;
-          margin: 0;
-          background: rgba(255, 255, 255, 0.6);
-          padding: 32px 24px;
-        }
-
-        .checkout.side-summary.summary-layout .flow {
-          grid-column: 1;
-          grid-row: 1;
-          margin: 0;
-        }
-
-        .checkout.side-summary.summary-layout .plan .badge {
-          background: #788ac4;
-          border-radius: 20px;
-        }
-
-        .checkout.side-summary.summary-layout .plan .collapsed-copy,
-        .checkout.side-summary.summary-layout .plan .billing {
-          display: none;
-        }
-
-        .checkout.side-summary.summary-layout .plan .expanded-copy {
-          display: inline;
-        }
-
-        .checkout.side-summary.summary-layout .plan .billing-details {
-          display: grid;
-          gap: 8px;
-        }
-      }
-
       @media (max-width: 600px) {
         .header {
           padding-inline: 16px;
@@ -2103,11 +2030,6 @@
         .flow,
         .success-card {
           max-width: 343px;
-        }
-
-        .checkout.side-summary.summary-layout .plan,
-        .checkout.side-summary.summary-layout .flow {
-          max-width: none;
         }
 
         .plan {
@@ -2204,7 +2126,7 @@
     </style>
   </head>
   <body>
-    <main class="checkout side-summary" id="checkout">
+    <main class="checkout" id="checkout">
       <header class="header">
         <button type="button" class="brand brand-link" data-action="reset-flow" aria-label="South China Morning Post - reset checkout">
           <img class="brand-logo" src="assets/subscription-checkout/SouthChinaMorningPost-logo.svg" alt="South China Morning Post" />
@@ -2743,6 +2665,16 @@
         return `<button type="button" class="promo" data-action="show-promo">Got a promo code?</button>`;
       }
 
+      function purchaseSummary() {
+        const firstLine = state.promoDiscountApplied ? "HKD480 for a year" : "HKD780 for a year";
+        return `
+          <ul class="summary">
+            <li>${firstLine}</li>
+            <li>then HKD960/year, renewing automatically</li>
+          </ul>
+        `;
+      }
+
       function forgotPanel() {
         return `
           <section class="panel expanded">
@@ -2770,7 +2702,7 @@
           <section class="panel expanded">
             ${stepHeader(2, "Payment")}
             <p class="payment-intro">Please choose a payment method to continue:</p>
-            <div class="card-body payment-choice-body" style="margin-top:0; gap:16px">
+            <div class="card-body" style="margin-top:0; gap:16px">
               <div class="method-list">
                 <button type="button" class="method-row" data-action="choose-credit">
                   <span class="cards">
@@ -2852,6 +2784,7 @@
                   <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
+                ${purchaseSummary()}
                 <p class="renewal">You can <strong>cancel your renewal anytime</strong> from your account settings. <span class="teal">We'll send you an email reminder 30 days before each renewal.</span></p>
                 <button type="button" class="cta" data-action="pay" ${payDisabled}>pay &amp; subscribe</button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
@@ -2948,6 +2881,7 @@
                   <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
+                ${purchaseSummary()}
                 <button type="button" class="cta" data-action="pay" ${state.appleTerms ? "" : "disabled"}>pay with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" style="filter:brightness(0) invert(1); margin-left:6px" /></button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
@@ -2993,9 +2927,7 @@
 
       function render() {
         const authMode = ["socialAuth", "socialLoading", "paymentLoading"].includes(state.screen);
-        const planMode = !authMode && !["success", "already"].includes(state.screen);
         checkout.classList.toggle("auth-mode", authMode);
-        checkout.classList.toggle("summary-layout", planMode);
         checkout.classList.toggle("with-deal", !authMode && ["paymentMethod", "creditLoading", "credit", "apple", "appleLoading", "success", "already"].includes(state.screen));
         deal.classList.toggle("hidden", !["paymentMethod", "creditLoading", "credit", "apple", "appleLoading"].includes(state.screen));
 
