@@ -1828,6 +1828,11 @@
         justify-self: center;
       }
 
+      .purchase .terms {
+        font-size: 14px;
+        line-height: 20px;
+      }
+
       .renewal {
         margin: 0;
         font-size: 14px;
@@ -2892,11 +2897,11 @@
               ${promoBlock()}
 
               <div class="purchase">
+                <p class="renewal">You can <strong>cancel your renewal anytime</strong> from your account settings. <span class="teal">We'll send you an email reminder 30 days before each renewal.</span></p>
                 <label class="checkbox-row terms">
                   <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
-                <p class="renewal">You can <strong>cancel your renewal anytime</strong> from your account settings. <span class="teal">We'll send you an email reminder 30 days before each renewal.</span></p>
                 <button type="button" class="cta" data-action="pay" ${payDisabled}>pay &amp; subscribe</button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
@@ -2916,11 +2921,11 @@
               <div class="skeleton-area">
                 <span class="skel line"></span>
                 <span class="skel input"></span>
+                <span class="skel long"></span>
                 <div class="checkbox-row">
                   <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
                   <span class="skel long"></span>
                 </div>
-                <span class="skel long"></span>
                 <span class="skel btn"></span>
                 <span class="skel line" style="justify-self:center;width:216px;height:13px"></span>
               </div>
@@ -2955,11 +2960,11 @@
                   <span class="skel line" style="width:128px;margin-bottom:16px"></span>
                   <span class="skel long" style="height:1px"></span>
                 </div>
+                <span class="skel long"></span>
                 <div class="checkbox-row">
                   <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
                   <span class="skel long"></span>
                 </div>
-                <span class="skel long"></span>
                 <span class="skel btn"></span>
                 <span class="skel line" style="justify-self:center;width:216px;height:13px"></span>
               </div>
@@ -2988,6 +2993,7 @@
               </div>
               ${promoBlock()}
               <div class="purchase">
+                <p class="renewal">You can <strong>cancel your renewal anytime</strong> from your account settings. <span class="teal">We'll send you an email reminder 30 days before each renewal.</span></p>
                 <label class="checkbox-row terms">
                   <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
