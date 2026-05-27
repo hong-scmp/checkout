@@ -1,0 +1,3228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subscription 3.0 Checkout Prototype - Side Summary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&amp;family=Roboto+Condensed:wght@400;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --action-blue: #2c4692;
+        --secondary-blue: #4585ff;
+        --secondary-blue-100: #dae7ff;
+        --primary-blue-50: #f1f3f9;
+        --teal: #2aa191;
+        --light-teal: #aad9d3;
+        --red: #eb4254;
+        --black: #000;
+        --white: #fff;
+        --grey-900: #333;
+        --grey-700: #666;
+        --grey-500: #888;
+        --grey-400: #a1a1a1;
+        --grey-250: #ccc;
+        --grey-200: #dfdfdf;
+        --bluegrey-100: #d3d4d6;
+        --skeleton: #d9d9d9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--primary-blue-50);
+        color: var(--black);
+        font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .checkout {
+        min-height: 100vh;
+        background: var(--primary-blue-50);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 56px;
+      }
+
+      .checkout.with-deal {
+        background-image:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+          linear-gradient(90deg, rgb(120, 138, 196), rgb(120, 138, 196));
+      }
+
+      .checkout.auth-mode {
+        background: var(--white);
+        padding-bottom: 0;
+      }
+
+      .checkout.auth-mode .header,
+      .checkout.auth-mode .deal {
+        display: none;
+      }
+
+      .checkout.auth-mode .shell {
+        width: 100%;
+        padding: 0;
+        flex: 1;
+      }
+
+      .header {
+        width: 100%;
+        height: 54px;
+        padding: 16px 40px;
+        background: var(--white);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .brand {
+        width: 207px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .brand-logo {
+        display: block;
+        width: 207px;
+        height: 22px;
+        object-fit: contain;
+      }
+
+      .brand-link {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .brand-flag {
+        width: 28px;
+        height: 22px;
+        border: 1px solid #d2d6e8;
+        border-radius: 1px;
+        background:
+          linear-gradient(135deg, #fff 0 42%, #f6c145 42% 58%, #001246 58%),
+          #fff;
+      }
+
+      .brand-wordmark {
+        color: #001246;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 13px;
+        line-height: 1;
+        letter-spacing: 0;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .deal {
+        width: 100%;
+        min-height: 40px;
+        background: var(--secondary-blue-100);
+        color: var(--action-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px 12px;
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .deal strong {
+        font-weight: 700;
+      }
+
+      .deal span {
+        font-weight: 400;
+      }
+
+      .deal-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+        flex: none;
+      }
+
+      .shell {
+        width: min(100%, 656px);
+        padding: 8px 8px 0;
+      }
+
+      .checkout.side-summary.summary-layout .shell {
+        width: min(100%, 1048px);
+        padding-inline: 16px;
+      }
+
+      .plan {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto 8px;
+        background: var(--white);
+        border: 0;
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      .plan.plan-loading {
+        display: grid;
+        gap: 12px;
+      }
+
+      .plan-row,
+      .pay-row,
+      .section-head,
+      .account-summary,
+      .method-row,
+      .field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .plan h1 {
+        margin: 0;
+        font-size: 18px;
+        line-height: 1.2;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        border-radius: 28px;
+        background: #788ac4;
+        color: var(--white);
+        padding: 4px 8px;
+        font-size: 12px;
+        line-height: 1;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .badge.promo-badge {
+        background: var(--secondary-blue);
+      }
+
+      .badge-expanded,
+      .expanded-copy,
+      .billing-close {
+        display: none;
+      }
+
+      .plan.open .badge {
+        background: #788ac4;
+        border-radius: 20px;
+      }
+
+      .plan.open .collapsed-copy,
+      .plan.open .billing-open {
+        display: none;
+      }
+
+      .plan.open .expanded-copy,
+      .plan.open .billing-close {
+        display: inline;
+      }
+
+      .tag {
+        width: 12px;
+        height: 12px;
+        border: 1.8px solid currentColor;
+        transform: rotate(45deg);
+        border-radius: 2px;
+        display: inline-block;
+      }
+
+      .tag::after {
+        content: "";
+        width: 2px;
+        height: 2px;
+        border-radius: 50%;
+        background: currentColor;
+        position: absolute;
+        margin: 2px 0 0 2px;
+      }
+
+      .tag-icon {
+        width: 12px;
+        height: 12px;
+        display: block;
+        flex: none;
+      }
+
+      .plan-copy {
+        margin: 8px 0 0;
+        color: var(--grey-900);
+        font-size: 14px;
+        line-height: 18px;
+      }
+
+      .billing {
+        margin-top: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 0;
+        background: transparent;
+        color: var(--action-blue);
+        padding: 0;
+        font-size: 12px;
+      }
+
+      .chev {
+        width: 8px;
+        height: 8px;
+        border-right: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(45deg);
+        margin-top: -4px;
+      }
+
+      .billing-details {
+        display: none;
+        margin-top: 12px;
+        color: var(--black);
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .plan.open .billing-details {
+        display: grid;
+        gap: 8px;
+      }
+
+      .plan.open .chev {
+        transform: rotate(225deg);
+        margin-top: 4px;
+      }
+
+      .pay-row {
+        margin-top: 16px;
+        border-top: 1px solid var(--grey-200);
+        padding-top: 16px;
+        font-size: 14px;
+      }
+
+      .plan-skel-line {
+        display: block;
+        height: 18px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #d9d9d9, #ececec, #d9d9d9);
+        background-size: 240% 100%;
+        animation: shimmer 1.15s linear infinite;
+      }
+
+      .plan-skel-muted {
+        background: linear-gradient(90deg, #d6dced, #edf1fb, #d6dced);
+        background-size: 240% 100%;
+      }
+
+      .timeline-unit {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        border-top: 1px solid var(--grey-200);
+        padding-top: 8px;
+      }
+
+      .timeline-copy {
+        display: flex;
+        min-width: 0;
+        gap: 4px;
+        padding-right: 12px;
+      }
+
+      .timeline-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1px solid var(--secondary-blue);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        margin-top: 1px;
+      }
+
+      .timeline-dot::after {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--secondary-blue);
+      }
+
+      .timeline-dot.next {
+        border-color: #788ac4;
+      }
+
+      .timeline-dot.next::after {
+        background: #788ac4;
+      }
+
+      .timeline-dot-icon {
+        width: 16px;
+        height: 16px;
+        display: block;
+        flex: none;
+        margin-top: 1px;
+      }
+
+      .timeline-title {
+        margin: 0;
+        font-size: 14px;
+        line-height: 18px;
+      }
+
+      .timeline-subtitle {
+        margin: 0;
+        color: var(--grey-700);
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .timeline-subtitle.offer {
+        color: var(--secondary-blue);
+      }
+
+      .timeline-price {
+        flex: none;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .timeline-price p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 18px;
+      }
+
+      .timeline-price s {
+        display: block;
+        color: var(--grey-700);
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .pay-row s {
+        color: var(--grey-500);
+        margin-right: 4px;
+      }
+
+      .flow {
+        max-width: 640px;
+        margin: 0 auto;
+        border: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .checkout.side-summary.summary-layout .flow {
+        width: 100%;
+      }
+
+      .panel {
+        background: var(--white);
+        border-bottom: 0;
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      .panel.expanded {
+        padding-bottom: 40px;
+      }
+
+      .step-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        line-height: 1.2;
+        font-weight: 700;
+        color: var(--black);
+      }
+
+      .step-no {
+        width: 24px;
+        height: 24px;
+        border-radius: 32px;
+        background: var(--black);
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      .step-no.done {
+        display: none;
+      }
+
+      .step-check-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+        flex: none;
+      }
+
+      .section-head.disabled .step-no {
+        background: var(--grey-400);
+      }
+
+      .section-head.disabled .step-title {
+        color: var(--grey-400);
+      }
+
+      .section-head.disabled .step-label {
+        color: var(--grey-400);
+      }
+
+      .completed-copy {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .step-label {
+        color: var(--black);
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .completed-email {
+        color: var(--grey-500);
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .link-button {
+        border: 0;
+        background: transparent;
+        color: var(--action-blue);
+        text-decoration: underline;
+        padding: 0;
+        font-size: 14px;
+      }
+
+      .card-body {
+        margin-top: 24px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .card-title {
+        margin: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      .card-subtitle {
+        margin: -8px 0 0;
+        width: 100%;
+        text-align: center;
+        color: var(--grey-700);
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .form-width {
+        width: 100%;
+        max-width: 360px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .social {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid var(--grey-250);
+        border-radius: 8px;
+        background: var(--white);
+        color: var(--grey-700);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        position: relative;
+        padding: 12px 16px;
+        font-size: 14px;
+        line-height: 1.2;
+      }
+
+      .social-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+
+      .social-icon-only {
+        flex: 1 1 0;
+        min-height: 48px;
+        padding: 11px 16px;
+        border-color: var(--grey-400);
+      }
+
+      .social-auth-page {
+        min-height: 100vh;
+        width: 100%;
+        color: #202124;
+      }
+
+      .social-account-choice {
+        width: 100%;
+        border: 1px solid #dadce0;
+        border-radius: 12px;
+        background: var(--white);
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+
+      .social-account-choice:hover {
+        background: #f8fafd;
+        border-color: #c2d3f7;
+      }
+
+      .social-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #a142f4;
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex: none;
+      }
+
+      .social-account-copy {
+        display: grid;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .social-account-copy strong {
+        font-size: 15px;
+        color: #202124;
+      }
+
+      .social-account-copy span {
+        color: var(--grey-700);
+        font-size: 13px;
+      }
+
+      .social-auth-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+      }
+
+      .social-auth-primary {
+        min-width: 96px;
+        border: 0;
+        border-radius: 24px;
+        background: #2f5fd6;
+        color: var(--white);
+        padding: 12px 24px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .social-auth-secondary {
+        border: 0;
+        background: transparent;
+        color: #2f5fd6;
+        padding: 12px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .social-auth-provider-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+      }
+
+      .social-auth-page.google {
+        background: #eef3fb;
+        display: grid;
+        align-items: center;
+        padding: 42px 24px;
+      }
+
+      .social-google-window {
+        width: min(100%, 1180px);
+        margin: 0 auto;
+      }
+
+      .social-google-header {
+        min-height: 56px;
+        border-bottom: 1px solid #dadce0;
+        border-radius: 30px 30px 0 0;
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 28px;
+        font-weight: 500;
+        color: #3c4043;
+      }
+
+      .social-google-card {
+        min-height: 390px;
+        border-radius: 0 0 30px 30px;
+        background: var(--white);
+        padding: 68px 40px 34px;
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 72px;
+      }
+
+      .social-google-title {
+        margin: 0;
+        font-size: 44px;
+        line-height: 1.05;
+        font-weight: 400;
+        letter-spacing: 0;
+      }
+
+      .social-google-copy p {
+        margin: 28px 0 0;
+        font-size: 18px;
+        line-height: 1.4;
+      }
+
+      .social-google-copy strong {
+        color: #2f5fd6;
+        font-weight: 600;
+      }
+
+      .social-google-panel {
+        display: grid;
+        align-content: start;
+        gap: 20px;
+      }
+
+      .social-google-panel .social-account-choice {
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      .social-alt-action {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: #2f5fd6;
+        padding: 10px 4px;
+        text-align: left;
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .social-google-note {
+        margin: 18px 0 0;
+        color: #5f6368;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .social-google-actions {
+        align-self: end;
+        grid-column: 1 / -1;
+      }
+
+      .social-google-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 28px 18px 0;
+        color: #3c4043;
+        font-size: 14px;
+      }
+
+      .social-footer-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
+
+      .social-auth-page.apple {
+        background: var(--white);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .social-apple-header {
+        width: min(100%, 1120px);
+        margin: 0 auto;
+        padding: 28px 24px 20px;
+        border-bottom: 1px solid #d2d2d7;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #1d1d1f;
+      }
+
+      .social-apple-brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .social-apple-brand img {
+        width: 22px;
+        height: 26px;
+        object-fit: contain;
+      }
+
+      .social-apple-signin {
+        color: #6e6e73;
+        font-size: 14px;
+      }
+
+      .social-apple-main {
+        flex: 1;
+        width: min(100%, 580px);
+        margin: 0 auto;
+        padding: 110px 24px 60px;
+        display: grid;
+        justify-items: center;
+        align-content: start;
+        text-align: center;
+      }
+
+      .social-apple-app {
+        width: 74px;
+        height: 74px;
+        border-radius: 18px;
+        border: 1px solid #d8dce5;
+        background: #f5f6fa;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+        display: grid;
+        place-items: center;
+        margin-bottom: 28px;
+      }
+
+      .social-apple-copy {
+        margin: 0 0 36px;
+        color: #424245;
+        font-size: 21px;
+        line-height: 1.35;
+      }
+
+      .social-apple-main .social-account-choice {
+        max-width: 420px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+
+      .social-apple-primary {
+        width: min(100%, 420px);
+        min-height: 48px;
+        border: 0;
+        border-radius: 10px;
+        background: #111;
+        color: var(--white);
+        font-size: 17px;
+        cursor: pointer;
+      }
+
+      .social-apple-footer {
+        padding: 24px;
+        background: #f5f5f7;
+        color: #6e6e73;
+        text-align: center;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .social-auth-page.facebook {
+        min-height: 100vh;
+        background: var(--white);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .social-facebook-layout {
+        flex: 1;
+        display: grid;
+        grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1fr);
+        min-height: 720px;
+      }
+
+      .social-facebook-promo {
+        border-right: 1px solid #dddfe2;
+        padding: 58px 64px;
+        display: grid;
+        align-content: start;
+      }
+
+      .social-facebook-mark {
+        width: 72px;
+        height: 72px;
+      }
+
+      .social-facebook-panel {
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        width: min(100%, 540px);
+        margin: 0 auto;
+        padding: 56px 36px;
+        position: relative;
+      }
+
+      .social-facebook-gear {
+        position: absolute;
+        top: 66px;
+        right: 38px;
+        width: 28px;
+        height: 28px;
+        color: #1c1e21;
+      }
+
+      .social-facebook-profile {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        display: grid;
+        justify-items: center;
+        gap: 28px;
+        margin-bottom: 54px;
+        color: #1c1e21;
+      }
+
+      .social-facebook-avatar {
+        width: 178px;
+        height: 178px;
+        border-radius: 50%;
+        background: #a142f4;
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .social-facebook-name {
+        margin: 0;
+        font-size: 30px;
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-align: center;
+      }
+
+      .social-facebook-actions {
+        width: 100%;
+        display: grid;
+        gap: 14px;
+      }
+
+      .social-facebook-primary {
+        width: 100%;
+        min-height: 58px;
+        border: 0;
+        border-radius: 29px;
+        background: #316ff6;
+        color: var(--white);
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      .social-facebook-secondary {
+        width: 100%;
+        min-height: 54px;
+        border: 1px solid #dadde1;
+        border-radius: 27px;
+        background: var(--white);
+        color: #1c1e21;
+        padding: 13px 20px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .social-facebook-create {
+        width: 100%;
+        min-height: 54px;
+        border: 1px solid #316ff6;
+        border-radius: 27px;
+        background: var(--white);
+        color: #316ff6;
+        margin-top: 58px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .social-facebook-meta {
+        margin-top: 26px;
+        width: 92px;
+        height: auto;
+      }
+
+      .social-facebook-footer {
+        border-top: 1px solid #dddfe2;
+        padding: 22px 36px;
+        color: #65676b;
+        display: flex;
+        justify-content: center;
+        gap: 34px;
+        font-size: 14px;
+        flex-wrap: wrap;
+      }
+
+      .social-loading-page {
+        min-height: 100vh;
+        width: 100%;
+        background: var(--white);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        text-align: center;
+      }
+
+      .social-loading-content {
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+      }
+
+      .scmp-flag-mini {
+        width: 52px;
+        height: 40px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+
+      .scmp-flag-mini::before,
+      .scmp-flag-mini::after {
+        content: "";
+        display: block;
+        height: 32px;
+        margin-top: 4px;
+      }
+
+      .scmp-flag-mini::before {
+        background: #ffca32;
+      }
+
+      .scmp-flag-mini::after {
+        background: #001246;
+      }
+
+      .social-loading-title {
+        margin: 0;
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .social-loading-copy {
+        margin: 0;
+        color: var(--grey-700);
+        font-size: 14px;
+      }
+
+      .social-spinner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 3px solid #e2e4ea;
+        border-top-color: var(--action-blue);
+        animation: spin 0.9s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .social-badge {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        border-radius: 4px;
+        background: var(--grey-200);
+        color: var(--black);
+        padding: 2px 4px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .icon-google,
+      .icon-fb,
+      .icon-apple {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        font-weight: 700;
+      }
+
+      .icon-google {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        color: #4285f4;
+        border: 2px solid #4285f4;
+        font-size: 14px;
+      }
+
+      .icon-fb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #1877f2;
+        color: var(--white);
+        font-size: 17px;
+      }
+
+      .icon-apple {
+        width: 21px;
+        height: 24px;
+        color: var(--black);
+        font-size: 23px;
+        line-height: 1;
+      }
+
+      .asset-icon {
+        display: block;
+        flex: none;
+        object-fit: contain;
+      }
+
+      .asset-icon.google {
+        width: 22px;
+        height: 22px;
+      }
+
+      .asset-icon.apple {
+        width: 20px;
+        height: 24px;
+      }
+
+      .asset-icon.facebook {
+        width: 24px;
+        height: 24px;
+      }
+
+      .separator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        width: 100%;
+        margin: 8px 0;
+        font-size: 16px;
+      }
+
+      .separator::before,
+      .separator::after {
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: var(--grey-200);
+      }
+
+      .field-wrap {
+        display: grid;
+        gap: 4px;
+      }
+
+      .field {
+        width: 100%;
+        height: 48px;
+        background: var(--white);
+        border: 1px solid var(--grey-400);
+        border-radius: 2px;
+        padding: 12px 16px;
+        color: var(--black);
+      }
+
+      .field:focus-within {
+        border: 2px solid var(--grey-900);
+        padding: 11px 15px;
+      }
+
+      .field input {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        color: var(--black);
+        font-size: 16px;
+        background: transparent;
+        min-width: 0;
+      }
+
+      .field input::placeholder {
+        color: var(--grey-400);
+      }
+
+      .field.invalid {
+        border: 2px solid var(--red);
+        padding: 11px 15px;
+      }
+
+      .error {
+        color: var(--red);
+        font-size: 12px;
+        text-align: left;
+      }
+
+      .field-link {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        white-space: nowrap;
+        font-size: 14px;
+      }
+
+      .tick-small {
+        width: 16px;
+        height: 9px;
+        border-left: 2px solid var(--teal);
+        border-bottom: 2px solid var(--teal);
+        transform: rotate(-45deg);
+        margin-top: -4px;
+      }
+
+      .password-toggle {
+        width: 32px;
+        height: 32px;
+        border: 0;
+        background: transparent;
+        padding: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        cursor: pointer;
+      }
+
+      .password-toggle img {
+        width: 24px;
+        height: 24px;
+        display: block;
+      }
+
+      .password-forgot {
+        justify-self: start;
+        text-align: left;
+      }
+
+      .cta {
+        width: 100%;
+        min-height: 43px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--action-blue);
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.2;
+        font-weight: 700;
+        padding: 12px 16px;
+      }
+
+      .cta:disabled,
+      .cta.disabled {
+        background: var(--grey-400);
+        cursor: default;
+      }
+
+      .fineprint {
+        margin: 0;
+        color: var(--grey-700);
+        font-size: 12px;
+        line-height: 1.4;
+        text-align: center;
+      }
+
+      .fineprint a,
+      .terms a {
+        color: inherit;
+        text-decoration: underline;
+      }
+
+      .payment-intro {
+        margin: 16px 0;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .method-list {
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+        border: 1px solid var(--grey-250);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .payment-choice-body {
+        width: 100%;
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .method-row {
+        width: 100%;
+        height: 56px;
+        border: 0;
+        border-bottom: 1px solid var(--grey-250);
+        background: var(--white);
+        padding: 0 16px 0 24px;
+      }
+
+      .method-row:last-child {
+        border-bottom: 0;
+      }
+
+      .cards {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .card-logo {
+        width: 41px;
+        height: 28px;
+        border: 1px solid var(--grey-200);
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--white);
+        color: #1434cb;
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .card-logo.mc {
+        color: #111;
+      }
+
+      .card-logo.mc::before,
+      .card-logo.mc::after {
+        content: "";
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .card-logo.mc::before {
+        background: #eb001b;
+        margin-right: -5px;
+      }
+
+      .card-logo.mc::after {
+        background: #f79e1b;
+      }
+
+      .card-logo.amex {
+        background: #1f72cd;
+        color: var(--white);
+      }
+
+      .card-logo.union {
+        color: #0867b2;
+        font-size: 8px;
+      }
+
+      .payment-logo {
+        display: block;
+        flex: none;
+        object-fit: contain;
+      }
+
+      .payment-logo.card {
+        width: 41px;
+        height: 28px;
+      }
+
+      .payment-logo.applepay {
+        width: 49px;
+        height: 20px;
+      }
+
+      .payment-logo.alipay {
+        width: 86px;
+        height: 20px;
+      }
+
+      .apple-pay {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0;
+      }
+
+      .alipay {
+        color: #1677ff;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .arrow-right {
+        width: 9px;
+        height: 9px;
+        border-right: 1.6px solid var(--grey-700);
+        border-bottom: 1.6px solid var(--grey-700);
+        transform: rotate(-45deg);
+      }
+
+      .secure {
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+        justify-self: center;
+        align-self: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: #727272;
+        font-size: 13px;
+        line-height: 16px;
+        text-align: center;
+      }
+
+      .lock {
+        width: 13px;
+        height: 11px;
+        border: 1.8px solid currentColor;
+        border-radius: 2px;
+        position: relative;
+      }
+
+      .lock::before {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border: 1.8px solid currentColor;
+        border-bottom: 0;
+        border-radius: 6px 6px 0 0;
+        left: 0.7px;
+        top: -8px;
+      }
+
+      .secure .asset-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      .payment-fields {
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+        display: grid;
+        gap: 24px;
+      }
+
+      .field-label {
+        margin: 0 0 8px;
+        font-size: 14px;
+      }
+
+      .radio-row {
+        width: 100%;
+        min-height: 54px;
+        border-top: 1px solid var(--grey-200);
+        border-bottom: 1px solid var(--grey-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 8px;
+        background: var(--white);
+      }
+
+      .radio-side {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .radio {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 1px solid var(--grey-500);
+        background: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .radio.active {
+        border-color: var(--action-blue);
+      }
+
+      .radio.active::after {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--action-blue);
+      }
+
+      .new-card {
+        display: none;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .new-card.open {
+        display: grid;
+      }
+
+      .field.card-number {
+        justify-content: flex-start;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .select-field {
+        width: 100%;
+        height: 48px;
+        border: 1px solid var(--grey-400);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 8px 12px 16px;
+        font-size: 16px;
+        background: var(--white);
+        color: var(--black);
+      }
+
+      .select-value {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .select-wrap {
+        position: relative;
+      }
+
+      .country-menu {
+        position: absolute;
+        z-index: 5;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        max-height: 220px;
+        overflow: auto;
+        border: 1px solid var(--grey-250);
+        border-radius: 4px;
+        background: var(--white);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      .country-option {
+        width: 100%;
+        border: 0;
+        border-bottom: 1px solid var(--grey-200);
+        background: var(--white);
+        color: var(--black);
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 14px;
+      }
+
+      .country-option:last-child {
+        border-bottom: 0;
+      }
+
+      .country-option:hover,
+      .country-option.selected {
+        background: var(--primary-blue-50);
+      }
+
+      .globe {
+        width: 24px;
+        height: 24px;
+        border: 1.7px solid var(--grey-700);
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .globe::before,
+      .globe::after {
+        content: "";
+        position: absolute;
+        border: 1px solid var(--grey-700);
+      }
+
+      .globe::before {
+        inset: 4px 8px;
+        border-top: 0;
+        border-bottom: 0;
+      }
+
+      .globe::after {
+        left: 3px;
+        right: 3px;
+        top: 10px;
+      }
+
+      .select-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .card-input-icon {
+        width: 24px;
+        height: 16px;
+      }
+
+      .checkbox-row {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        gap: 8px;
+        align-items: start;
+        font-size: 12px;
+        line-height: 1.25;
+      }
+
+      .checkbox-row input {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--black);
+      }
+
+      .promo {
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+        border: 0;
+        border-top: 1px dashed var(--grey-200);
+        border-bottom: 1px dashed var(--grey-200);
+        background: var(--white);
+        color: var(--grey-700);
+        padding: 12px 8px;
+        text-align: left;
+        font-size: 14px;
+      }
+
+      .promo-form {
+        display: grid;
+        gap: 8px;
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+      }
+
+      .promo-entry {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .promo-input {
+        flex: 1 1 auto;
+        min-width: 0;
+        height: 43px;
+        border: 1px solid var(--grey-200);
+        border-radius: 2px;
+        padding: 11px;
+        color: var(--black);
+        font-size: 14px;
+      }
+
+      .promo-input:focus {
+        border-color: var(--black);
+        outline: 0;
+      }
+
+      .promo-input.error {
+        border: 2px solid var(--red);
+        padding: 10px;
+      }
+
+      .promo-apply {
+        min-width: 74px;
+        height: 43px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--action-blue);
+        color: var(--white);
+        padding: 12px 16px;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
+
+      .promo-apply:disabled {
+        background: var(--grey-400);
+      }
+
+      .promo-error {
+        margin: 0;
+        color: var(--red);
+        font-size: 12px;
+      }
+
+      .promo-applied {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+        border: 1px solid var(--light-teal);
+        border-radius: 4px;
+        background: rgba(170, 217, 211, 0.3);
+        padding: 12px 8px;
+      }
+
+      .promo-applied-code {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--teal);
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .promo-tick {
+        width: 10px;
+        height: 6px;
+        border-left: 2px solid var(--teal);
+        border-bottom: 2px solid var(--teal);
+        transform: rotate(-45deg);
+        margin-top: -2px;
+      }
+
+      .promo-remove {
+        width: 20px;
+        height: 20px;
+        border: 0;
+        border-radius: 50%;
+        background: var(--white);
+        color: var(--teal);
+        font-size: 14px;
+        line-height: 1;
+      }
+
+      .promo-saving {
+        margin: 0;
+        color: var(--teal);
+        font-size: 12px;
+      }
+
+      .purchase {
+        display: grid;
+        gap: 16px;
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+      }
+
+      .purchase .cta {
+        max-width: 360px;
+        justify-self: center;
+      }
+
+      .renewal {
+        margin: 0;
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .renewal strong {
+        font-weight: 700;
+      }
+
+      .renewal .teal {
+        color: var(--teal);
+      }
+
+      .success-card {
+        max-width: 480px;
+        margin: 16px auto 0;
+        background: var(--white);
+        border: 1px solid var(--grey-200);
+        border-radius: 8px 8px 0 0;
+        padding: 40px 32px;
+        text-align: center;
+      }
+
+      .success-icon {
+        width: 48px;
+        height: 48px;
+        border: 3px solid #788ac4;
+        border-radius: 50%;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .success-icon::after {
+        content: "";
+        width: 22px;
+        height: 12px;
+        border-left: 3px solid #788ac4;
+        border-bottom: 3px solid #788ac4;
+        transform: rotate(-45deg);
+        margin-top: -6px;
+      }
+
+      .success-card h2 {
+        margin: 0;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 24px;
+        font-weight: 400;
+      }
+
+      .success-copy {
+        max-width: 390px;
+        margin: 8px auto 0;
+        color: var(--grey-700);
+        font-size: 16px;
+        line-height: 1.25;
+      }
+
+      .receipt {
+        width: 100%;
+        max-width: 416px;
+        margin: 32px auto 0;
+        padding: 16px;
+        border-radius: 8px;
+        background: var(--primary-blue-50);
+        text-align: left;
+      }
+
+      .receipt-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #d6dced;
+        color: #30343c;
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .receipt-row + .receipt-row {
+        margin-top: 16px;
+      }
+
+      .receipt-row:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+      }
+
+      .receipt-row strong {
+        text-align: right;
+      }
+
+      .receipt-note {
+        margin: 8px auto 0;
+        max-width: 390px;
+        color: var(--grey-700);
+        font-size: 14px;
+        line-height: 1.25;
+        text-align: center;
+      }
+
+      .success-cta {
+        max-width: 360px;
+        margin: 32px auto 0;
+      }
+
+      .payment-loading-page {
+        min-height: 360px;
+        display: grid;
+        place-items: center;
+        padding: 72px 24px;
+        text-align: center;
+      }
+
+      .payment-loading-content {
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+      }
+
+      .payment-loading-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .payment-loading-copy {
+        margin: 0;
+        color: var(--grey-700);
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .skeleton-area {
+        display: grid;
+        gap: 24px;
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+      }
+
+      .account-loading-panel {
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .account-loading-center {
+        flex: 1;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+        width: 100%;
+        padding: 32px 0 42px;
+      }
+
+      .account-loading-content {
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .loading-title {
+        margin: 0;
+        color: var(--black);
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .loading-copy {
+        margin: 0;
+        color: var(--grey-700);
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .account-loading-spinner {
+        width: 40px;
+        height: 40px;
+        margin-top: 14px;
+        border-radius: 50%;
+        border: 3px solid #e2e4ea;
+        border-top-color: var(--action-blue);
+        animation: spin 0.9s linear infinite;
+      }
+
+      .skel {
+        display: block;
+        background: linear-gradient(90deg, #d9d9d9, #ececec, #d9d9d9);
+        background-size: 240% 100%;
+        border-radius: 2px;
+        animation: shimmer 1.15s linear infinite;
+      }
+
+      .skel.line {
+        height: 14px;
+        width: 132px;
+      }
+
+      .skel.long {
+        width: 100%;
+        height: 13px;
+      }
+
+      .skel.input {
+        width: 100%;
+        height: 48px;
+        border-radius: 2px;
+      }
+
+      .skel.btn {
+        height: 48px;
+        width: 100%;
+        border-radius: 4px;
+      }
+
+      @keyframes shimmer {
+        to {
+          background-position: -240% 0;
+        }
+      }
+
+      @keyframes dotPulse {
+        0%,
+        80%,
+        100% {
+          opacity: 0.25;
+        }
+
+        40% {
+          opacity: 1;
+        }
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (min-width: 900px) {
+        .checkout.side-summary.summary-layout .shell {
+          display: grid;
+          grid-template-columns: minmax(0, 640px) 360px;
+          align-items: stretch;
+          gap: 16px;
+        }
+
+        .checkout.side-summary.summary-layout .plan {
+          grid-column: 2;
+          grid-row: 1;
+          align-self: stretch;
+          display: flex;
+          flex-direction: column;
+          max-width: none;
+          min-height: 100%;
+          margin: 0;
+          background: rgba(255, 255, 255, 0.6);
+          padding: 32px 24px;
+        }
+
+        .checkout.side-summary.summary-layout .flow {
+          grid-column: 1;
+          grid-row: 1;
+          margin: 0;
+        }
+
+        .checkout.side-summary.summary-layout .plan .badge {
+          background: #788ac4;
+          border-radius: 20px;
+        }
+
+        .checkout.side-summary.summary-layout .plan .collapsed-copy,
+        .checkout.side-summary.summary-layout .plan .billing {
+          display: none;
+        }
+
+        .checkout.side-summary.summary-layout .plan .expanded-copy {
+          display: inline;
+        }
+
+        .checkout.side-summary.summary-layout .plan .billing-details {
+          display: grid;
+          gap: 8px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .header {
+          padding-inline: 16px;
+        }
+
+        .brand {
+          transform: scale(0.9);
+        }
+
+        .shell {
+          width: 100%;
+          padding: 8px 16px 0;
+        }
+
+        .plan,
+        .flow,
+        .success-card {
+          max-width: 343px;
+        }
+
+        .checkout.side-summary.summary-layout .plan,
+        .checkout.side-summary.summary-layout .flow {
+          max-width: none;
+        }
+
+        .plan {
+          box-shadow: none;
+        }
+
+        .completed-email {
+          max-width: 128px;
+        }
+
+        .field-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .badge {
+          font-size: 11px;
+        }
+
+        .deal {
+          justify-content: flex-start;
+          padding-inline: 16px;
+        }
+
+        .social-auth-page.google {
+          padding: 16px;
+          align-items: start;
+        }
+
+        .social-google-header {
+          border-radius: 22px 22px 0 0;
+          padding-inline: 20px;
+        }
+
+        .social-google-card {
+          grid-template-columns: 1fr;
+          gap: 28px;
+          padding: 34px 20px 24px;
+          border-radius: 0 0 22px 22px;
+        }
+
+        .social-google-title {
+          font-size: 34px;
+        }
+
+        .social-google-actions,
+        .social-auth-actions {
+          justify-content: space-between;
+        }
+
+        .social-google-footer {
+          align-items: flex-start;
+          gap: 16px;
+          flex-direction: column;
+        }
+
+        .social-apple-main {
+          padding-top: 56px;
+        }
+
+        .social-facebook-layout {
+          grid-template-columns: 1fr;
+          min-height: auto;
+        }
+
+        .social-facebook-promo {
+          border-right: 0;
+          border-bottom: 1px solid #dddfe2;
+          padding: 32px 28px;
+          gap: 48px;
+        }
+
+        .social-facebook-panel {
+          padding: 42px 24px;
+        }
+
+        .social-facebook-gear {
+          top: 32px;
+          right: 24px;
+        }
+
+        .social-facebook-avatar {
+          width: 136px;
+          height: 136px;
+        }
+
+        .social-facebook-name {
+          font-size: 26px;
+        }
+
+        .social-facebook-create {
+          margin-top: 36px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="checkout side-summary" id="checkout">
+      <header class="header">
+        <button type="button" class="brand brand-link" data-action="reset-flow" aria-label="South China Morning Post - reset checkout">
+          <img class="brand-logo" src="assets/subscription-checkout/SouthChinaMorningPost-logo.svg" alt="South China Morning Post" />
+        </button>
+      </header>
+
+      <div class="deal hidden" id="deal">
+        <img class="deal-icon" src="assets/subscription-checkout/check-circle-2.svg" alt="" />
+        <strong>Great choice!</strong>
+        <span>You're securing</span>
+        <strong>an excellent deal!</strong>
+      </div>
+
+      <section class="shell" id="shell">
+        <article class="plan" id="plan">
+          <div class="plan-row">
+            <h1>Standard: Annual</h1>
+            <span class="badge"><img class="tag-icon" src="assets/subscription-checkout/tag.svg" alt="" /> <span>Introductory offer</span></span>
+          </div>
+          <p class="plan-copy"><span class="collapsed-copy">HKD780 for a year. Renews at HKD960/year.</span><span class="expanded-copy">HKD780 for the first year. Renews at HKD960/year.</span></p>
+          <button type="button" class="billing" id="billingToggle">
+            <span class="chev"></span>
+            <span class="billing-open">See billing details</span>
+            <span class="billing-close">Hide billing details</span>
+          </button>
+          <div class="billing-details">
+            <div class="timeline-unit">
+              <div class="timeline-copy">
+                <img class="timeline-dot-icon" src="assets/subscription-checkout/Timeline dot.svg" alt="" />
+                <div>
+                  <p class="timeline-title">First year</p>
+                  <p class="timeline-subtitle offer">Intro rate · 19% off</p>
+                </div>
+              </div>
+              <div class="timeline-price">
+                <p>HKD780</p>
+                <s>HKD960</s>
+              </div>
+            </div>
+            <div class="timeline-unit">
+              <div class="timeline-copy">
+                <img class="timeline-dot-icon" src="assets/subscription-checkout/Timeline dot_outline.svg" alt="" />
+                <div>
+                  <p class="timeline-title">After that, billed yearly</p>
+                  <p class="timeline-subtitle">Standard rate · renews on 21 May 2027</p>
+                </div>
+              </div>
+              <div class="timeline-price">
+                <p>HKD960/yr</p>
+              </div>
+            </div>
+          </div>
+          <div class="pay-row">
+            <span>Pay today</span>
+            <strong><s>HKD960</s> HKD780.00</strong>
+          </div>
+        </article>
+
+        <section class="flow" id="flow" aria-live="polite"></section>
+      </section>
+    </main>
+
+    <script>
+      const state = {
+        screen: "account",
+        email: "",
+        invalidEmail: false,
+        password: "",
+        passwordVisible: false,
+        socialProvider: "",
+        addNewCard: false,
+        cardComplete: false,
+        residenceCountry: "Hong Kong SAR",
+        billingSameCountry: true,
+        billingCountry: "",
+        openCountryMenu: "",
+        planExpanded: false,
+        promoPlanLoading: false,
+        promoDiscountApplied: false,
+        promoOpen: false,
+        promoCode: "",
+        promoStatus: "",
+        terms: false,
+        appleTerms: false,
+      };
+
+      const flow = document.querySelector("#flow");
+      const checkout = document.querySelector("#checkout");
+      const deal = document.querySelector("#deal");
+      const shell = document.querySelector("#shell");
+      const assetPath = "assets/subscription-checkout/";
+      const asset = (name) => `${assetPath}${name}`;
+      const countries = [
+        "Hong Kong SAR",
+        "Singapore",
+        "United States",
+        "United Kingdom",
+        "Australia",
+        "Canada",
+        "Japan",
+        "Taiwan",
+        "Macau SAR",
+      ];
+
+      attachBillingToggle();
+
+      function isValidEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+      }
+
+      function setScreen(screen, patch = {}) {
+        Object.assign(state, patch, { screen });
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function updateState(patch = {}) {
+        Object.assign(state, patch);
+        render();
+      }
+
+      function attachBillingToggle() {
+        const billingToggle = document.querySelector("#billingToggle");
+        if (!billingToggle) return;
+        billingToggle.addEventListener("click", () => {
+          state.planExpanded = !state.planExpanded;
+          render();
+        });
+      }
+
+      function planMarkup() {
+        if (state.promoPlanLoading) {
+          return `
+            <article class="plan plan-loading" id="plan" aria-busy="true" aria-label="Updating plan summary">
+              <div class="plan-row">
+                <span class="plan-skel-line" style="width:140px"></span>
+                <span class="plan-skel-line plan-skel-muted" style="width:112px; opacity:0"></span>
+              </div>
+              <span class="plan-skel-line" style="width:min(260px, 76%)"></span>
+              <span class="plan-skel-line plan-skel-muted" style="width:109px; height:14px"></span>
+              <div class="pay-row">
+                <span class="plan-skel-line" style="width:68px; height:16px"></span>
+                <span class="plan-skel-line" style="width:141px; height:16px"></span>
+              </div>
+            </article>
+          `;
+        }
+
+        const promo = state.promoDiscountApplied;
+        const firstYear = promo ? "HKD480" : "HKD780";
+        const payToday = promo ? "HKD480.00" : "HKD780.00";
+        const summary = promo
+          ? "HKD480 for the first year. Renews at HKD960/year."
+          : "HKD780 for a year. Renews at HKD960/year.";
+        const expandedSummary = promo
+          ? "HKD480 for the first year. Renews at HKD960/year."
+          : "HKD780 for the first year. Renews at HKD960/year.";
+        const badgeText = promo ? "SCMPDISCOUNT50" : "Introductory offer";
+        const badgeClass = promo ? " promo-badge" : "";
+        const offerCopy = promo ? "Promo code · 50% off" : "Intro rate · 19% off";
+        const openClass = state.planExpanded ? " open" : "";
+
+        return `
+          <article class="plan${openClass}" id="plan">
+            <div class="plan-row">
+              <h1>Standard: Annual</h1>
+              <span class="badge${badgeClass}"><img class="tag-icon" src="${asset("tag.svg")}" alt="" /> <span>${badgeText}</span></span>
+            </div>
+            <p class="plan-copy"><span class="collapsed-copy">${summary}</span><span class="expanded-copy">${expandedSummary}</span></p>
+            <button type="button" class="billing" id="billingToggle">
+              <span class="chev"></span>
+              <span class="billing-open">See billing details</span>
+              <span class="billing-close">Hide billing details</span>
+            </button>
+            <div class="billing-details">
+              <div class="timeline-unit">
+                <div class="timeline-copy">
+                  <img class="timeline-dot-icon" src="${asset("Timeline dot.svg")}" alt="" />
+                  <div>
+                    <p class="timeline-title">First year</p>
+                    <p class="timeline-subtitle offer">${offerCopy}</p>
+                  </div>
+                </div>
+                <div class="timeline-price">
+                  <p>${firstYear}</p>
+                  <s>HKD960</s>
+                </div>
+              </div>
+              <div class="timeline-unit">
+                <div class="timeline-copy">
+                  <img class="timeline-dot-icon" src="${asset("Timeline dot_outline.svg")}" alt="" />
+                  <div>
+                    <p class="timeline-title">After that, billed yearly</p>
+                    <p class="timeline-subtitle">Standard rate · renews on 21 May 2027</p>
+                  </div>
+                </div>
+                <div class="timeline-price">
+                  <p>HKD960/yr</p>
+                </div>
+              </div>
+            </div>
+            <div class="pay-row">
+              <span>Pay today</span>
+              <strong><s>HKD960</s> ${payToday}</strong>
+            </div>
+          </article>
+        `;
+      }
+
+      function stepHeader(number, title, options = {}) {
+        const done = options.done ? " done" : "";
+        const disabled = options.disabled ? " disabled" : "";
+        const stepMark = options.done
+          ? `<img class="step-check-icon" src="${asset("step-no..svg")}" alt="" />`
+          : `<span class="step-no${done}">${number}</span>`;
+        const email = options.email
+          ? `<span class="completed-email">${state.email || "abc@abc.com"}</span>`
+          : "";
+        const change = options.change
+          ? `<button type="button" class="link-button" data-action="edit-account">${options.change}</button>`
+          : "";
+        return `
+          <div class="section-head${disabled}">
+            <div class="${options.done ? "completed-copy" : "step-title"}">
+              ${stepMark}
+              <span class="step-label">${title}</span>
+              ${email}
+            </div>
+            ${change}
+          </div>
+        `;
+      }
+
+      function accountPanel() {
+        const emailValue = state.email;
+        const invalidClass = state.invalidEmail ? " invalid" : "";
+        const error = state.invalidEmail
+          ? `<span class="error">Please enter a valid email address</span>`
+          : "";
+        const buttonDisabled = !emailValue.trim() ? "disabled" : "";
+        return `
+          <section class="panel expanded">
+            ${stepHeader(1, "Account")}
+            <div class="card-body">
+              <h2 class="card-title">Login or Sign-up to get started</h2>
+              <p class="card-subtitle">New or returning? Either way, start here.</p>
+              <div class="form-width">
+                <div class="social-row" aria-label="Social sign in options">
+                  <button type="button" class="social social-icon-only" data-action="social-login" data-provider="google" aria-label="Continue with Google">
+                    <img class="asset-icon google" src="${asset("icon_google.svg")}" alt="" />
+                  </button>
+                  <button type="button" class="social social-icon-only" data-action="social-login" data-provider="apple" aria-label="Continue with Apple">
+                    <img class="asset-icon apple" src="${asset("icon-apple.svg")}" alt="" />
+                  </button>
+                  <button type="button" class="social social-icon-only" data-action="social-login" data-provider="facebook" aria-label="Continue with Facebook">
+                    <img class="asset-icon facebook" src="${asset("icon_fb.svg")}" alt="" />
+                  </button>
+                </div>
+                <div class="separator">or</div>
+                <div class="field-wrap">
+                  <label class="field${invalidClass}" aria-label="Email address">
+                    <input id="emailInput" type="text" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" dir="ltr" placeholder="Enter your email" value="${emailValue}" />
+                    ${isValidEmail(emailValue) ? '<span class="tick-small" aria-hidden="true"></span>' : ""}
+                  </label>
+                  ${error}
+                </div>
+                <button type="button" class="cta" data-action="continue-email" ${buttonDisabled}>Continue with email</button>
+              </div>
+              <p class="fineprint">
+                By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+              </p>
+            </div>
+          </section>
+          <section class="panel">
+            ${stepHeader(2, "Payment", { disabled: true })}
+          </section>
+        `;
+      }
+
+      function passwordPanel() {
+        const canLogin = state.password.length > 0;
+        const passwordType = state.passwordVisible ? "text" : "password";
+        const passwordIcon = state.passwordVisible ? "eye-off.svg" : "password_eye.svg";
+        const passwordLabel = state.passwordVisible ? "Hide password" : "Show password";
+        return `
+          <section class="panel expanded">
+            ${stepHeader(1, "Account")}
+            <div class="card-body">
+              <h2 class="card-title">We found your account</h2>
+              <p class="card-subtitle">Sign in to continue with your subscription</p>
+              <div class="form-width" style="gap:24px">
+                <div class="field-wrap" style="gap:8px">
+                  <div class="field">
+                    <span>${state.email || "abc@abc.com"}</span>
+                    <button type="button" class="field-link" data-action="edit-account">Change</button>
+                  </div>
+                  <div class="field" aria-label="Password">
+                    <input id="passwordInput" type="${passwordType}" placeholder="Password" value="${state.password}" />
+                    <button type="button" class="password-toggle" data-action="toggle-password" aria-label="${passwordLabel}">
+                      <img src="${asset(passwordIcon)}" alt="" />
+                    </button>
+                  </div>
+                  <button type="button" class="link-button password-forgot" data-action="forgot">Forgot your password?</button>
+                </div>
+                <button type="button" class="cta" data-action="login" ${canLogin ? "" : "disabled"}>Log in</button>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            ${stepHeader(2, "Payment", { disabled: true })}
+          </section>
+        `;
+      }
+
+      function accountLoadingPanel() {
+        return `
+          <section class="panel expanded account-loading-panel">
+            ${stepHeader(1, "Account")}
+            <div class="account-loading-center" role="status" aria-live="polite" aria-label="Creating your account">
+              <div class="account-loading-content">
+                <h2 class="loading-title">Creating your account</h2>
+                <p class="loading-copy">We’re creating your account and getting your subscription ready.</p>
+                <span class="account-loading-spinner" aria-hidden="true"></span>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            ${stepHeader(2, "Payment", { disabled: true })}
+          </section>
+        `;
+      }
+
+      function socialProviderMeta() {
+        const provider = state.socialProvider || "google";
+        const data = {
+          google: {
+            name: "Google",
+            className: "google",
+            icon: "icon_google.svg",
+          },
+          apple: {
+            name: "Apple",
+            className: "apple",
+            icon: "icon-apple.svg",
+          },
+          facebook: {
+            name: "Facebook",
+            className: "facebook",
+            icon: "icon_fb.svg",
+          },
+        };
+        return data[provider] || data.google;
+      }
+
+      function savedSocialAccount(extraClass = "") {
+        return `
+          <button type="button" class="social-account-choice ${extraClass}" data-action="social-account-continue" aria-label="Continue as abc@abc.com">
+            <span class="social-avatar">A</span>
+            <span class="social-account-copy">
+              <strong>Alex Chan</strong>
+              <span>abc@abc.com</span>
+            </span>
+          </button>
+        `;
+      }
+
+      function socialAuthPanel() {
+        const provider = socialProviderMeta();
+        if (provider.className === "apple") {
+          return `
+            <section class="social-auth-page apple">
+              <header class="social-apple-header">
+                <div class="social-apple-brand">
+                  <img src="${asset(provider.icon)}" alt="" />
+                  <span>Apple Account</span>
+                </div>
+                <span class="social-apple-signin">Sign in</span>
+              </header>
+              <main class="social-apple-main">
+                <div class="social-apple-app" aria-hidden="true">
+                  <span class="scmp-flag-mini"></span>
+                </div>
+                <p class="social-apple-copy">Use your Apple Account to sign in to SCMP.</p>
+                ${savedSocialAccount("apple-account")}
+                <button type="button" class="social-apple-primary" data-action="social-account-continue">Continue with Apple</button>
+                <button type="button" class="social-auth-secondary" data-action="social-back">Cancel</button>
+              </main>
+              <footer class="social-apple-footer">
+                Copyright © 2026 Apple Inc. All rights reserved.<br />
+                Privacy Policy
+              </footer>
+            </section>
+          `;
+        }
+
+        if (provider.className === "facebook") {
+          return `
+            <section class="social-auth-page facebook">
+              <div class="social-facebook-layout">
+                <aside class="social-facebook-promo">
+                  <img class="social-facebook-mark" src="${asset(provider.icon)}" alt="" />
+                </aside>
+                <main class="social-facebook-panel">
+                  <svg class="social-facebook-gear" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2-1.5-2-3.5-2.4 1a7.4 7.4 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.4 7.4 0 0 0 7 6.5l-2.4-1-2 3.5 2 1.5c-.1.5-.1 1-.1 1.5s0 1 .1 1.5l-2 1.5 2 3.5 2.4-1a7.4 7.4 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 2.6-1.5l2.4 1 2-3.5-2-1.5ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z" />
+                  </svg>
+                  <div class="social-facebook-profile" aria-label="Saved Facebook profile Alex Chan">
+                    <span class="social-facebook-avatar" aria-hidden="true">A</span>
+                    <h2 class="social-facebook-name">Alex Chan</h2>
+                  </div>
+                  <div class="social-facebook-actions">
+                    <button type="button" class="social-facebook-primary" data-action="social-account-continue">Continue</button>
+                    <button type="button" class="social-facebook-secondary">Use another profile</button>
+                  </div>
+                  <button type="button" class="social-facebook-create">Create new account</button>
+                  <img class="social-facebook-meta" src="${asset("meta-logo.svg")}" alt="Meta" />
+                </main>
+              </div>
+              <footer class="social-facebook-footer">
+                <span>English (UK)</span>
+                <span>Polski</span>
+                <span>Español</span>
+                <span>Français (France)</span>
+                <span>Italiano</span>
+                <span>More languages...</span>
+              </footer>
+            </section>
+          `;
+        }
+
+        return `
+          <section class="social-auth-page ${provider.className}">
+            <div class="social-google-window">
+              <div class="social-google-header">
+                <img class="social-auth-provider-icon" src="${asset(provider.icon)}" alt="" />
+                <span>Sign in with Google</span>
+              </div>
+              <div class="social-google-card">
+                <div class="social-google-copy">
+                  <h2 class="social-google-title">Choose an account</h2>
+                  <p>to continue to <strong>scmp.com</strong></p>
+                </div>
+                <div class="social-google-panel">
+                  ${savedSocialAccount("google-account")}
+                  <button type="button" class="social-alt-action">Use another account</button>
+                  <p class="social-google-note">Before using this app, you can review scmp.com's Privacy Policy and Terms of Service.</p>
+                </div>
+                <div class="social-auth-actions social-google-actions">
+                  <button type="button" class="social-auth-secondary" data-action="social-back">Back</button>
+                  <button type="button" class="social-auth-primary" data-action="social-account-continue">Continue</button>
+                </div>
+              </div>
+              <div class="social-google-footer">
+                <span>English (United States)</span>
+                <span class="social-footer-links"><span>Help</span><span>Privacy</span><span>Terms</span></span>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function socialLoadingPanel() {
+        return `
+          <section class="social-loading-page" role="status" aria-live="polite">
+            <div class="social-loading-content">
+              <span class="scmp-flag-mini" aria-hidden="true"></span>
+              <h2 class="social-loading-title">Signing you in...</h2>
+              <p class="social-loading-copy">We’re verifying your account and getting your subscription ready.</p>
+              <span class="social-spinner" aria-hidden="true"></span>
+            </div>
+          </section>
+        `;
+      }
+
+      function paymentLoadingPanel() {
+        return `
+          <section class="payment-loading-page" role="status" aria-live="polite">
+            <div class="payment-loading-content">
+              <h2 class="payment-loading-title">Processing your payment...</h2>
+              <p class="payment-loading-copy">Please wait while we confirm your subscription.</p>
+              <span class="account-loading-spinner" aria-hidden="true"></span>
+            </div>
+          </section>
+        `;
+      }
+
+      function countrySelect(target, label, value, placeholder) {
+        const selectedValue = value || placeholder;
+        const menuOpen = state.openCountryMenu === target;
+        const options = countries.map((country) => `
+          <button type="button" class="country-option${country === value ? " selected" : ""}" data-action="select-country" data-target="${target}" data-country="${country}">
+            ${country}
+          </button>
+        `).join("");
+        return `
+          <div class="select-wrap">
+            <p class="field-label">${label}</p>
+            <button type="button" class="select-field" data-action="toggle-country" data-target="${target}" aria-expanded="${menuOpen}">
+              <span class="select-value"><img class="asset-icon select-icon" src="${asset("globe.svg")}" alt="" /> ${selectedValue}</span>
+              <span class="chev"></span>
+            </button>
+            ${menuOpen ? `<div class="country-menu">${options}</div>` : ""}
+          </div>
+        `;
+      }
+
+      function promoBlock() {
+        const code = state.promoCode.trim();
+        if (state.promoStatus === "applied") {
+          return `
+            <div class="promo-form">
+              <div class="promo-applied">
+                <span class="promo-applied-code"><span class="promo-tick" aria-hidden="true"></span> SCMPDISCOUNT50</span>
+                <button type="button" class="promo-remove" data-action="remove-promo" aria-label="Remove promo code">x</button>
+              </div>
+              <p class="promo-saving">You save <strong>HKD480</strong> (50% off)</p>
+            </div>
+          `;
+        }
+        if (state.promoOpen) {
+          const errorClass = state.promoStatus === "error" ? " error" : "";
+          const error = state.promoStatus === "error"
+            ? `<p class="promo-error">This code isn't valid. Check spelling or try another.</p>`
+            : "";
+          return `
+            <div class="promo-form">
+              <div class="promo-entry">
+                <input id="promoInput" class="promo-input${errorClass}" placeholder="Enter promo code" value="${state.promoCode}" />
+                <button type="button" class="promo-apply" data-action="apply-promo" ${code ? "" : "disabled"}>Apply</button>
+              </div>
+              ${error}
+            </div>
+          `;
+        }
+        return `<button type="button" class="promo" data-action="show-promo">Got a promo code?</button>`;
+      }
+
+      function forgotPanel() {
+        return `
+          <section class="panel expanded">
+            ${stepHeader(1, "Account", { email: true, change: "Edit" })}
+            <div class="card-body">
+              <div class="success-icon" style="border-color:var(--action-blue); transform:scale(.82)"></div>
+              <h2 class="card-title">Check your inbox</h2>
+              <p class="card-subtitle">We sent a password reset link to ${state.email || "abc@abc.com"}. Return here once you have reset it.</p>
+              <div class="form-width">
+                <button type="button" class="cta" data-action="back-password">Back to log in</button>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            ${stepHeader(2, "Payment", { disabled: true })}
+          </section>
+        `;
+      }
+
+      function paymentMethodPanel() {
+        return `
+          <section class="panel">
+            ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
+          </section>
+          <section class="panel expanded">
+            ${stepHeader(2, "Payment")}
+            <p class="payment-intro">Please choose a payment method to continue:</p>
+            <div class="card-body payment-choice-body" style="margin-top:0; gap:16px">
+              <div class="method-list">
+                <button type="button" class="method-row" data-action="choose-credit">
+                  <span class="cards">
+                    <img class="payment-logo card" src="${asset("Visa.svg")}" alt="Visa" />
+                    <img class="payment-logo card" src="${asset("Master.svg")}" alt="Mastercard" />
+                    <img class="payment-logo card" src="${asset("Amex.svg")}" alt="American Express" />
+                    <img class="payment-logo card" src="${asset("UnionPay.svg")}" alt="UnionPay" />
+                  </span>
+                  <span class="arrow-right"></span>
+                </button>
+                <button type="button" class="method-row" data-action="choose-apple">
+                  <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" />
+                  <span class="arrow-right"></span>
+                </button>
+                <button type="button" class="method-row" data-action="choose-alipay">
+                  <img class="payment-logo alipay" src="${asset("Alipay.svg")}" alt="Alipay" />
+                  <span class="arrow-right"></span>
+                </button>
+              </div>
+              <button type="button" class="cta disabled" disabled>pay &amp; subscribe</button>
+              <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
+            </div>
+          </section>
+        `;
+      }
+
+      function creditPanel() {
+        const addOpen = state.addNewCard ? " open" : "";
+        const payDisabled = state.terms && (state.cardComplete || !state.addNewCard) ? "" : "disabled";
+        return `
+          <section class="panel">
+            ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
+          </section>
+          <section class="panel expanded">
+            ${stepHeader(2, "Payment", { change: "Change" })}
+            <div class="card-body">
+              <div class="payment-fields">
+                <div>
+                  <p class="field-label">Your credit and debit cards</p>
+                  <div class="radio-row">
+                    <span class="radio-side">
+                      <button type="button" class="radio ${state.addNewCard ? "" : "active"}" data-action="saved-card" aria-label="Use saved card"></button>
+                      <img class="payment-logo card" src="${asset("Visa.svg")}" alt="Visa" />
+                    </span>
+                    <span>*4242</span>
+                  </div>
+                  <div class="radio-row">
+                    <span class="radio-side">
+                      <button type="button" class="radio ${state.addNewCard ? "active" : ""}" data-action="add-card" aria-label="Add a new card"></button>
+                      <span>Add a new card</span>
+                    </span>
+                  </div>
+                  <div class="new-card${addOpen}">
+                    <label class="field card-number">
+                      <img class="asset-icon card-input-icon" src="${asset("credit-card.svg")}" alt="" />
+                      <input id="cardInput" inputmode="numeric" placeholder="Card number" value="${state.cardComplete ? "4242 4242 4242 4242" : ""}" />
+                    </label>
+                    <div class="field-grid">
+                      <label class="field"><input id="expiryInput" placeholder="MM/YY" value="${state.cardComplete ? "12/28" : ""}" /></label>
+                      <label class="field"><input id="cvvInput" placeholder="CVV" value="${state.cardComplete ? "123" : ""}" /></label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  ${countrySelect("residence", "Country of residence", state.residenceCountry, "Select a country or region")}
+                  <label class="checkbox-row" style="margin-top:8px">
+                    <input id="billingSameInput" type="checkbox" ${state.billingSameCountry ? "checked" : ""} />
+                    <span>My billing address is in the same country</span>
+                  </label>
+                  ${state.billingSameCountry ? "" : countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}
+                </div>
+              </div>
+
+              ${promoBlock()}
+
+              <div class="purchase">
+                <label class="checkbox-row terms">
+                  <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
+                  <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
+                </label>
+                <p class="renewal">You can <strong>cancel your renewal anytime</strong> from your account settings. <span class="teal">We'll send you an email reminder 30 days before each renewal.</span></p>
+                <button type="button" class="cta" data-action="pay" ${payDisabled}>pay &amp; subscribe</button>
+                <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function appleSkeleton() {
+        return `
+          <section class="panel">
+            ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
+          </section>
+          <section class="panel expanded">
+            ${stepHeader(2, "Payment", { change: "Change" })}
+            <div class="card-body">
+              <div class="skeleton-area">
+                <span class="skel line"></span>
+                <span class="skel input"></span>
+                <div class="checkbox-row">
+                  <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
+                  <span class="skel long"></span>
+                </div>
+                <span class="skel long"></span>
+                <span class="skel btn"></span>
+                <span class="skel line" style="justify-self:center;width:216px;height:13px"></span>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function creditSkeleton() {
+        return `
+          <section class="panel">
+            ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
+          </section>
+          <section class="panel expanded">
+            ${stepHeader(2, "Payment", { change: "Change" })}
+            <div class="card-body">
+              <div class="skeleton-area">
+                <div>
+                  <span class="skel line" style="width:131px;margin-bottom:12px"></span>
+                  <span class="skel input"></span>
+                </div>
+                <div>
+                  <span class="skel line" style="width:220px;margin-bottom:8px"></span>
+                  <span class="skel input"></span>
+                  <div class="field-grid" style="margin-top:8px">
+                    <span class="skel input"></span>
+                    <span class="skel input"></span>
+                  </div>
+                </div>
+                <div>
+                  <span class="skel long" style="height:2px;margin-bottom:16px"></span>
+                  <span class="skel line" style="width:128px;margin-bottom:16px"></span>
+                  <span class="skel long" style="height:1px"></span>
+                </div>
+                <div class="checkbox-row">
+                  <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
+                  <span class="skel long"></span>
+                </div>
+                <span class="skel long"></span>
+                <span class="skel btn"></span>
+                <span class="skel line" style="justify-self:center;width:216px;height:13px"></span>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function applePanel() {
+        return `
+          <section class="panel">
+            ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
+          </section>
+          <section class="panel expanded">
+            ${stepHeader(2, "Payment", { change: "Change" })}
+            <div class="card-body">
+              <div class="payment-fields">
+                <div>
+                  ${countrySelect("residence", "Country of residence", state.residenceCountry, "Select a country or region")}
+                </div>
+                <label class="checkbox-row">
+                  <input id="billingSameInput" type="checkbox" ${state.billingSameCountry ? "checked" : ""} />
+                  <span>My billing address is in the same country</span>
+                </label>
+                ${state.billingSameCountry ? "" : countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}
+              </div>
+              ${promoBlock()}
+              <div class="purchase">
+                <label class="checkbox-row terms">
+                  <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
+                  <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
+                </label>
+                <button type="button" class="cta" data-action="pay" ${state.appleTerms ? "" : "disabled"}>pay with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" style="filter:brightness(0) invert(1); margin-left:6px" /></button>
+                <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function successPanel() {
+        const paidToday = state.promoDiscountApplied ? "HKD480.00" : "HKD780.00";
+        shell.innerHTML = `
+          <section class="success-card">
+            <div class="success-icon"></div>
+            <h2>You’re all set!</h2>
+            <p class="success-copy">Thank you! Your support helps us deliver trusted, fact-based journalism</p>
+            <div class="receipt">
+              <div class="receipt-row"><span>Plan</span><strong>Standard Annual</strong></div>
+              <div class="receipt-row"><span>Paid today</span><strong>${paidToday}</strong></div>
+              <div class="receipt-row"><span>Renew on</span><strong>12 May 2027</strong></div>
+              <div class="receipt-row"><span>Account</span><strong>${state.email || "abc@abc.com"}</strong></div>
+            </div>
+            <p class="receipt-note">Receipt sent to your inbox. We'll remind you before your next renewal.</p>
+            <button type="button" class="cta success-cta" data-action="start-reading">Start reading</button>
+          </section>
+        `;
+      }
+
+      function alreadySubscribed() {
+        shell.innerHTML = `
+          <section class="success-card">
+            <div class="success-icon"></div>
+            <h2>You’re already subscribed</h2>
+            <div class="receipt">
+              <h3>Standard: Annual</h3>
+              <div class="receipt-row"><span>Email</span><strong>${state.email || "abc@abc.com"}</strong></div>
+              <div class="receipt-row"><span>Next renewal date</span><strong>12 May 2027</strong></div>
+            </div>
+            <button type="button" class="cta" data-action="start-reading" style="max-width:360px">Start reading</button>
+            <p class="fineprint" style="margin-top:16px">Not you? <a href="#" data-action="edit-account">Sign in with another account</a></p>
+          </section>
+        `;
+      }
+
+      function render() {
+        const authMode = ["socialAuth", "socialLoading", "paymentLoading"].includes(state.screen);
+        const planMode = !authMode && !["success", "already"].includes(state.screen);
+        checkout.classList.toggle("auth-mode", authMode);
+        checkout.classList.toggle("summary-layout", planMode);
+        checkout.classList.toggle("with-deal", !authMode && ["paymentMethod", "creditLoading", "credit", "apple", "appleLoading", "success", "already"].includes(state.screen));
+        deal.classList.toggle("hidden", !["paymentMethod", "creditLoading", "credit", "apple", "appleLoading"].includes(state.screen));
+
+        if (state.screen === "socialAuth") {
+          shell.innerHTML = socialAuthPanel();
+          return;
+        }
+
+        if (state.screen === "socialLoading") {
+          shell.innerHTML = socialLoadingPanel();
+          return;
+        }
+
+        if (state.screen === "paymentLoading") {
+          shell.innerHTML = paymentLoadingPanel();
+          return;
+        }
+
+        if (state.screen === "success") {
+          successPanel();
+          return;
+        }
+
+        if (state.screen === "already") {
+          alreadySubscribed();
+          return;
+        }
+
+        if (!document.querySelector("#plan")) {
+          shell.innerHTML = `
+            ${planMarkup()}
+            <section class="flow" id="flow" aria-live="polite"></section>
+          `;
+        } else {
+          document.querySelector("#plan").outerHTML = planMarkup();
+        }
+        attachBillingToggle();
+
+        const target = document.querySelector("#flow");
+        if (state.screen === "password") target.innerHTML = passwordPanel();
+        else if (state.screen === "accountLoading") target.innerHTML = accountLoadingPanel();
+        else if (state.screen === "forgot") target.innerHTML = forgotPanel();
+        else if (state.screen === "paymentMethod") target.innerHTML = paymentMethodPanel();
+        else if (state.screen === "creditLoading") target.innerHTML = creditSkeleton();
+        else if (state.screen === "credit") target.innerHTML = creditPanel();
+        else if (state.screen === "appleLoading") target.innerHTML = appleSkeleton();
+        else if (state.screen === "apple") target.innerHTML = applePanel();
+        else target.innerHTML = accountPanel();
+      }
+
+      document.addEventListener("input", (event) => {
+        if (event.target.id === "emailInput") {
+          state.email = event.target.value;
+          state.invalidEmail = false;
+          const field = event.target.closest(".field");
+          const error = field?.parentElement?.querySelector(".error");
+          const tick = field?.querySelector(".tick-small");
+          const continueButton = document.querySelector('[data-action="continue-email"]');
+          field?.classList.remove("invalid");
+          error?.remove();
+          if (continueButton) continueButton.disabled = !state.email.trim();
+          if (isValidEmail(state.email) && !tick) {
+            field?.insertAdjacentHTML("beforeend", '<span class="tick-small" aria-hidden="true"></span>');
+          }
+          if (!isValidEmail(state.email)) {
+            tick?.remove();
+          }
+        }
+        if (event.target.id === "passwordInput") {
+          state.password = event.target.value;
+          const loginButton = document.querySelector('[data-action="login"]');
+          if (loginButton) loginButton.disabled = state.password.length === 0;
+        }
+        if (event.target.id === "promoInput") {
+          state.promoCode = event.target.value.toUpperCase();
+          state.promoStatus = "";
+          const applyButton = document.querySelector('[data-action="apply-promo"]');
+          if (applyButton) applyButton.disabled = !state.promoCode.trim();
+          event.target.value = state.promoCode;
+          event.target.classList.remove("error");
+          document.querySelector(".promo-error")?.remove();
+        }
+        if (["cardInput", "expiryInput", "cvvInput"].includes(event.target.id)) {
+          state.cardComplete = true;
+          render();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.target.id === "emailInput" && event.key === "Enter") {
+          event.preventDefault();
+          document.querySelector('[data-action="continue-email"]')?.click();
+        }
+        if (event.target.id === "promoInput" && event.key === "Enter") {
+          event.preventDefault();
+          document.querySelector('[data-action="apply-promo"]')?.click();
+        }
+      });
+
+      document.addEventListener("change", (event) => {
+        if (event.target.id === "termsInput") {
+          state.terms = event.target.checked;
+          render();
+        }
+        if (event.target.id === "appleTermsInput") {
+          state.appleTerms = event.target.checked;
+          render();
+        }
+        if (event.target.id === "billingSameInput") {
+          state.billingSameCountry = event.target.checked;
+          state.openCountryMenu = "";
+          if (state.billingSameCountry) state.billingCountry = "";
+          render();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        const actionTarget = event.target.closest("[data-action]");
+        if (!actionTarget) return;
+        const action = actionTarget.dataset.action;
+        event.preventDefault();
+
+        if (action === "continue-email") {
+          if (!isValidEmail(state.email)) {
+            setScreen("account", { invalidEmail: true });
+          } else if (state.email.toLowerCase() === "subscriber@scmp.com") {
+            setScreen("already");
+          } else if (state.email.toLowerCase() === "abc@abc.com") {
+            setScreen("password");
+          } else {
+            setScreen("accountLoading");
+            setTimeout(() => {
+              if (state.screen === "accountLoading") setScreen("paymentMethod");
+            }, 1800);
+          }
+        }
+        if (action === "social-login") setScreen("socialAuth", { socialProvider: actionTarget.dataset.provider || "google" });
+        if (action === "social-back") setScreen("account");
+        if (action === "social-account-continue") {
+          setScreen("socialLoading", { email: "abc@abc.com" });
+          setTimeout(() => {
+            if (state.screen === "socialLoading") setScreen("paymentMethod");
+          }, 1700);
+        }
+        if (action === "edit-account") setScreen("account", { email: "", password: "", passwordVisible: false, invalidEmail: false });
+        if (action === "forgot") setScreen("forgot");
+        if (action === "back-password") setScreen("password");
+        if (action === "toggle-password") setScreen("password", { passwordVisible: !state.passwordVisible });
+        if (action === "login") setScreen("paymentMethod");
+        if (action === "toggle-country") {
+          state.openCountryMenu = state.openCountryMenu === actionTarget.dataset.target ? "" : actionTarget.dataset.target;
+          render();
+        }
+        if (action === "select-country") {
+          const target = actionTarget.dataset.target;
+          if (target === "residence") state.residenceCountry = actionTarget.dataset.country;
+          if (target === "billing") state.billingCountry = actionTarget.dataset.country;
+          state.openCountryMenu = "";
+          render();
+        }
+        if (action === "show-promo") updateState({ promoOpen: true, promoStatus: "" });
+        if (action === "apply-promo") {
+          const code = state.promoCode.trim().toUpperCase();
+          if (code === "SCMPDISCOUNT50") {
+            updateState({
+              promoCode: code,
+              promoStatus: "applied",
+              promoOpen: true,
+              promoPlanLoading: true,
+              promoDiscountApplied: false,
+              planExpanded: false,
+            });
+            setTimeout(() => {
+              if (state.promoStatus === "applied" && state.promoPlanLoading) {
+                updateState({ promoPlanLoading: false, promoDiscountApplied: true });
+              }
+            }, 1600);
+          } else {
+            updateState({ promoCode: code, promoStatus: "error", promoOpen: true });
+          }
+        }
+        if (action === "remove-promo") updateState({ promoOpen: false, promoCode: "", promoStatus: "", promoPlanLoading: false, promoDiscountApplied: false });
+        if (action === "choose-credit") {
+          setScreen("creditLoading");
+          setTimeout(() => setScreen("credit"), 900);
+        }
+        if (action === "choose-alipay") {
+          setScreen("creditLoading");
+          setTimeout(() => setScreen("credit"), 900);
+        }
+        if (action === "choose-apple") {
+          setScreen("appleLoading");
+          setTimeout(() => setScreen("apple"), 900);
+        }
+        if (action === "saved-card") setScreen("credit", { addNewCard: false, cardComplete: false });
+        if (action === "add-card") setScreen("credit", { addNewCard: true, cardComplete: false });
+        if (action === "pay") {
+          setScreen("paymentLoading");
+          setTimeout(() => {
+            if (state.screen === "paymentLoading") setScreen("success");
+          }, 1800);
+        }
+        if (action === "start-reading" || action === "reset-flow") {
+          setScreen("account", {
+            email: "",
+            invalidEmail: false,
+            password: "",
+            passwordVisible: false,
+            socialProvider: "",
+            addNewCard: false,
+            cardComplete: false,
+            residenceCountry: "Hong Kong SAR",
+            billingSameCountry: true,
+            billingCountry: "",
+            openCountryMenu: "",
+            planExpanded: false,
+            promoPlanLoading: false,
+            promoDiscountApplied: false,
+            promoOpen: false,
+            promoCode: "",
+            promoStatus: "",
+            terms: false,
+            appleTerms: false,
+          });
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>
