@@ -1278,6 +1278,26 @@
         cursor: default;
       }
 
+      .apple-pay-cta {
+        max-width: 360px;
+        justify-self: center;
+        gap: 8px;
+        background: var(--black);
+        font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-weight: 400;
+        text-transform: none;
+      }
+
+      .apple-pay-cta:not(:disabled) {
+        background: var(--black);
+      }
+
+      .apple-pay-cta .payment-logo.applepay {
+        width: 44px;
+        height: 19px;
+        filter: brightness(0) invert(1);
+      }
+
       .fineprint {
         margin: 0;
         color: var(--grey-700);
@@ -2898,7 +2918,7 @@
                   <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
-                <button type="button" class="cta" data-action="pay" ${state.appleTerms ? "" : "disabled"}>pay with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" style="filter:brightness(0) invert(1); margin-left:6px" /></button>
+                <button type="button" class="cta apple-pay-cta" data-action="pay" ${state.appleTerms ? "" : "disabled"}>Subscribe with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" /></button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
             </div>

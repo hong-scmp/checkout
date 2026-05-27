@@ -588,9 +588,10 @@
       .social-row {
         width: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 16px;
+        gap: 8px;
       }
 
       .social-icon-only {
@@ -1285,6 +1286,26 @@
       .cta.disabled {
         background: var(--grey-400);
         cursor: default;
+      }
+
+      .apple-pay-cta {
+        max-width: 360px;
+        justify-self: center;
+        gap: 8px;
+        background: var(--black);
+        font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-weight: 400;
+        text-transform: none;
+      }
+
+      .apple-pay-cta:not(:disabled) {
+        background: var(--black);
+      }
+
+      .apple-pay-cta .payment-logo.applepay {
+        width: 44px;
+        height: 19px;
+        filter: brightness(0) invert(1);
       }
 
       .fineprint {
@@ -2461,18 +2482,22 @@
           <section class="panel expanded">
             ${stepHeader(1, "Account")}
             <div class="card-body">
-              <h2 class="card-title">Login or Sign-up to get started</h2>
+              <h2 class="card-title">Start your subscription</h2>
               <p class="card-subtitle">New or returning? Either way, start here.</p>
               <div class="form-width">
                 <div class="social-row" aria-label="Social sign in options">
-                  <button type="button" class="social social-icon-only" data-action="social-login" data-provider="google" aria-label="Continue with Google">
+                  <button type="button" class="social" data-action="social-login" data-provider="google" aria-label="Continue with Google">
                     <img class="asset-icon google" src="${asset("icon_google.svg")}" alt="" />
+                    <span>Continue with Google</span>
+                    <span class="social-badge">Last used</span>
                   </button>
-                  <button type="button" class="social social-icon-only" data-action="social-login" data-provider="apple" aria-label="Continue with Apple">
+                  <button type="button" class="social" data-action="social-login" data-provider="apple" aria-label="Continue with Apple">
                     <img class="asset-icon apple" src="${asset("icon-apple.svg")}" alt="" />
+                    <span>Continue with Apple</span>
                   </button>
-                  <button type="button" class="social social-icon-only" data-action="social-login" data-provider="facebook" aria-label="Continue with Facebook">
+                  <button type="button" class="social" data-action="social-login" data-provider="facebook" aria-label="Continue with Facebook">
                     <img class="asset-icon facebook" src="${asset("icon_fb.svg")}" alt="" />
+                    <span>Continue with Facebook</span>
                   </button>
                 </div>
                 <div class="separator">or</div>
@@ -2959,7 +2984,7 @@
                   <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
-                <button type="button" class="cta" data-action="pay" ${state.appleTerms ? "" : "disabled"}>pay with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" style="filter:brightness(0) invert(1); margin-left:6px" /></button>
+                <button type="button" class="cta apple-pay-cta" data-action="pay" ${state.appleTerms ? "" : "disabled"}>Subscribe with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" /></button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
             </div>
