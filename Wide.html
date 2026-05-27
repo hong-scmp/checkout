@@ -1757,12 +1757,18 @@
       .promo-remove {
         width: 20px;
         height: 20px;
+        display: inline-grid;
+        place-items: center;
+        padding: 0;
         border: 0;
         border-radius: 50%;
         background: var(--white);
-        color: var(--teal);
-        font-size: 14px;
-        line-height: 1;
+      }
+
+      .promo-remove-icon {
+        width: 12px;
+        height: 12px;
+        display: block;
       }
 
       .promo-saving {
@@ -2658,7 +2664,7 @@
             <div class="promo-form">
               <div class="promo-applied">
                 <span class="promo-applied-code"><span class="promo-tick" aria-hidden="true"></span> SCMPDISCOUNT50</span>
-                <button type="button" class="promo-remove" data-action="remove-promo" aria-label="Remove promo code">x</button>
+                <button type="button" class="promo-remove" data-action="remove-promo" aria-label="Remove promo code"><img class="promo-remove-icon" src="${asset("close.svg")}" alt="" /></button>
               </div>
               <p class="promo-saving">You save <strong>HKD480</strong> (50% off)</p>
             </div>
