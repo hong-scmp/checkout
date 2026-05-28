@@ -2227,6 +2227,7 @@
         billingCountry: "",
         openCountryMenu: "",
         planExpanded: false,
+        initialPlanLoading: true,
         promoPlanLoading: false,
         promoDiscountApplied: false,
         promoOpen: false,
@@ -2271,6 +2272,17 @@
         render();
       }
 
+      let initialPlanLoadTimer = null;
+
+      function startInitialPlanLoading() {
+        if (initialPlanLoadTimer) clearTimeout(initialPlanLoadTimer);
+        state.initialPlanLoading = true;
+        initialPlanLoadTimer = setTimeout(() => {
+          initialPlanLoadTimer = null;
+          if (state.initialPlanLoading) updateState({ initialPlanLoading: false });
+        }, 5000);
+      }
+
       function attachBillingToggle() {
         const billingToggle = document.querySelector("#billingToggle");
         if (!billingToggle) return;
@@ -2281,9 +2293,10 @@
       }
 
       function planMarkup() {
-        if (state.promoPlanLoading) {
+        if (state.initialPlanLoading || state.promoPlanLoading) {
+          const loadingLabel = state.initialPlanLoading ? "Loading plan summary" : "Updating plan summary";
           return `
-            <article class="plan plan-loading" id="plan" aria-busy="true" aria-label="Updating plan summary">
+            <article class="plan plan-loading" id="plan" aria-busy="true" aria-label="${loadingLabel}">
               <div class="plan-row">
                 <span class="plan-skel-line" style="width:140px"></span>
                 <span class="plan-skel-line plan-skel-muted" style="width:112px; opacity:0"></span>
@@ -3157,6 +3170,7 @@
             billingCountry: "",
             openCountryMenu: "",
             planExpanded: false,
+            initialPlanLoading: true,
             promoPlanLoading: false,
             promoDiscountApplied: false,
             promoOpen: false,
@@ -3165,9 +3179,11 @@
             terms: false,
             appleTerms: false,
           });
+          startInitialPlanLoading();
         }
       });
 
+      startInitialPlanLoading();
       render();
     </script>
   </body>

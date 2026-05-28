@@ -62,7 +62,7 @@
 
       .links {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px;
       }
 
@@ -77,6 +77,11 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+      }
+
+      .card.featured {
+        grid-column: 1 / -1;
+        min-height: 148px;
       }
 
       .card:hover,
@@ -186,9 +191,33 @@
     <main class="page">
       <img class="brand" src="assets/subscription-checkout/SouthChinaMorningPost-logo.svg" alt="South China Morning Post" />
       <h1>Subscription Checkout Prototypes</h1>
-      <p class="intro">Choose a checkout flow variant to preview.</p>
+      <p class="intro">Start from the matching subscription page for the full journey, or open one of the checkout-only layout variants directly.</p>
 
       <section class="links" aria-label="Prototype links">
+        <a class="card featured" href="SubscriptionOriginal.html">
+          <span>
+            <h2>Full Journey: Original</h2>
+            <p>Begin on the subscription page, choose the offer, then continue into the original checkout flow.</p>
+          </span>
+          <span class="open">Open full journey</span>
+        </a>
+
+        <a class="card featured" href="SubscriptionWide.html">
+          <span>
+            <h2>Full Journey: Wide</h2>
+            <p>Begin on the subscription page, choose the offer, then continue into the wide checkout flow.</p>
+          </span>
+          <span class="open">Open full journey</span>
+        </a>
+
+        <a class="card featured" href="SubscriptionSide.html">
+          <span>
+            <h2>Full Journey: Side Summary</h2>
+            <p>Begin on the subscription page, choose the offer, then continue into the side-summary checkout flow.</p>
+          </span>
+          <span class="open">Open full journey</span>
+        </a>
+
         <a class="card" href="Original.html">
           <span>
             <h2>Original</h2>
