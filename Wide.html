@@ -556,6 +556,58 @@
         line-height: 1.25;
       }
 
+      .forgot-body {
+        margin-top: 24px;
+        padding-bottom: 24px;
+        gap: 24px;
+      }
+
+      .forgot-message {
+        width: 100%;
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+      }
+
+      .forgot-icon {
+        width: 48px;
+        height: 48px;
+        display: block;
+      }
+
+      .forgot-title {
+        margin: 0;
+        width: 100%;
+        color: var(--black);
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-align: center;
+      }
+
+      .forgot-copy {
+        margin: 0;
+        max-width: 470px;
+        color: var(--grey-700);
+        font-size: 14px;
+        line-height: 1.25;
+        text-align: center;
+      }
+
+      .forgot-copy strong {
+        color: var(--grey-900);
+        font-weight: 700;
+      }
+
+      .forgot-copy + .forgot-copy {
+        margin-top: 8px;
+      }
+
+      .forgot-send {
+        font-weight: 700;
+      }
+
       .form-width {
         width: 100%;
         max-width: 360px;
@@ -1991,6 +2043,10 @@
         text-align: center;
       }
 
+      .account-loading-content .account-loading-spinner {
+        margin-top: 0;
+      }
+
       .loading-title {
         margin: 0;
         color: var(--black);
@@ -2281,6 +2337,7 @@
       const shell = document.querySelector("#shell");
       const assetPath = "assets/subscription-checkout/";
       const asset = (name) => `${assetPath}${name}`;
+      const CHECKOUT_LOADING_DELAY = 3000;
       const countries = [
         "Hong Kong SAR",
         "Singapore",
@@ -2318,7 +2375,14 @@
         initialPlanLoadTimer = setTimeout(() => {
           initialPlanLoadTimer = null;
           if (state.initialPlanLoading) updateState({ initialPlanLoading: false });
-        }, 5000);
+        }, CHECKOUT_LOADING_DELAY);
+      }
+
+      function showAccountLoadingThen(screen, patch = {}) {
+        setScreen("accountLoading");
+        setTimeout(() => {
+          if (state.screen === "accountLoading") setScreen(screen, patch);
+        }, CHECKOUT_LOADING_DELAY);
       }
 
       function attachBillingToggle() {
@@ -2520,10 +2584,8 @@
         return `
           <section class="panel expanded account-loading-panel">
             ${stepHeader(1, "Account")}
-            <div class="account-loading-center" role="status" aria-live="polite" aria-label="Creating your account">
+            <div class="account-loading-center" role="status" aria-live="polite" aria-label="Checking account status">
               <div class="account-loading-content">
-                <h2 class="loading-title">Creating your account</h2>
-                <p class="loading-copy">We’re creating your account and getting your subscription ready.</p>
                 <span class="account-loading-spinner" aria-hidden="true"></span>
               </div>
             </div>
@@ -2740,15 +2802,21 @@
       }
 
       function forgotPanel() {
+        const accountEmail = state.email || "abc@abc.com";
         return `
           <section class="panel expanded">
-            ${stepHeader(1, "Account", { email: true, change: "Edit" })}
-            <div class="card-body">
-              <div class="success-icon" style="border-color:var(--action-blue); transform:scale(.82)"></div>
-              <h2 class="card-title">Check your inbox</h2>
-              <p class="card-subtitle">We sent a password reset link to ${state.email || "abc@abc.com"}. Return here once you have reset it.</p>
+            ${stepHeader(1, "Account")}
+            <div class="card-body forgot-body">
+              <div class="forgot-message">
+                <img class="forgot-icon" src="${asset("mail-check.svg")}" alt="" />
+                <h2 class="forgot-title">We've emailed you a password reset</h2>
+                <div>
+                  <p class="forgot-copy">Please check <strong>${accountEmail}</strong> and come back to complete your subscription.</p>
+                  <p class="forgot-copy">Not receiving the email? <button type="button" class="link-button forgot-send">Send again</button></p>
+                </div>
+              </div>
               <div class="form-width">
-                <button type="button" class="cta" data-action="back-password">Back to log in</button>
+                <button type="button" class="cta" data-action="back-password">Back to sign in</button>
               </div>
             </div>
           </section>
@@ -3117,14 +3185,11 @@
           if (!isValidEmail(state.email)) {
             setScreen("account", { invalidEmail: true });
           } else if (state.email.toLowerCase() === "subscriber@scmp.com") {
-            setScreen("already");
+            showAccountLoadingThen("already");
           } else if (state.email.toLowerCase() === "abc@abc.com") {
-            setScreen("password");
+            showAccountLoadingThen("password");
           } else {
-            setScreen("accountLoading");
-            setTimeout(() => {
-              if (state.screen === "accountLoading") setScreen("paymentMethod");
-            }, 1800);
+            showAccountLoadingThen("paymentMethod");
           }
         }
         if (action === "social-login") setScreen("socialAuth", { socialProvider: actionTarget.dataset.provider || "google" });
@@ -3133,14 +3198,14 @@
           setScreen("socialLoading", { email: "abc@abc.com" });
           setTimeout(() => {
             if (state.screen === "socialLoading") setScreen("paymentMethod");
-          }, 1700);
+          }, CHECKOUT_LOADING_DELAY);
         }
         if (action === "edit-account") setScreen("account", { email: "", password: "", passwordVisible: false, invalidEmail: false });
         if (action === "change-payment") setScreen("paymentMethod");
-        if (action === "forgot") setScreen("forgot");
+        if (action === "forgot") showAccountLoadingThen("forgot");
         if (action === "back-password") setScreen("password");
         if (action === "toggle-password") setScreen("password", { passwordVisible: !state.passwordVisible });
-        if (action === "login") setScreen("paymentMethod");
+        if (action === "login") showAccountLoadingThen("paymentMethod");
         if (action === "toggle-country") {
           state.openCountryMenu = state.openCountryMenu === actionTarget.dataset.target ? "" : actionTarget.dataset.target;
           render();
@@ -3168,7 +3233,7 @@
               if (state.promoStatus === "applied" && state.promoPlanLoading) {
                 updateState({ promoPlanLoading: false, promoDiscountApplied: true });
               }
-            }, 1600);
+            }, CHECKOUT_LOADING_DELAY);
           } else {
             updateState({ promoCode: code, promoStatus: "error", promoOpen: true });
           }
@@ -3176,15 +3241,15 @@
         if (action === "remove-promo") updateState({ promoOpen: false, promoCode: "", promoStatus: "", promoPlanLoading: false, promoDiscountApplied: false });
         if (action === "choose-credit") {
           setScreen("creditLoading");
-          setTimeout(() => setScreen("credit"), 900);
+          setTimeout(() => setScreen("credit"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "choose-alipay") {
           setScreen("creditLoading");
-          setTimeout(() => setScreen("credit"), 900);
+          setTimeout(() => setScreen("credit"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "choose-apple") {
           setScreen("appleLoading");
-          setTimeout(() => setScreen("apple"), 900);
+          setTimeout(() => setScreen("apple"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "saved-card") setScreen("credit", { addNewCard: false, cardComplete: false });
         if (action === "add-card") setScreen("credit", { addNewCard: true, cardComplete: false });
@@ -3192,7 +3257,7 @@
           setScreen("paymentLoading");
           setTimeout(() => {
             if (state.screen === "paymentLoading") setScreen("success");
-          }, 1800);
+          }, CHECKOUT_LOADING_DELAY);
         }
         if (action === "start-reading" || action === "reset-flow") {
           setScreen("account", {
