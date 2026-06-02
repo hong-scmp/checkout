@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Subscription 3.0 Checkout Prototype - Side Summary</title>
+    <title>Subscription 3.0 Checkout Prototype - No Plan Summary</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400&amp;family=Roboto+Condensed:wght@400;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
@@ -81,12 +81,20 @@
 
       .header {
         width: 100%;
-        height: 54px;
-        padding: 16px 40px;
-        background: transparent;
+        height: 56px;
+        padding: 0 40px;
+        background: var(--white);
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      .header-inner {
+        width: 100%;
+        max-width: 1088px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       .brand {
@@ -132,16 +140,56 @@
         white-space: nowrap;
       }
 
+      .header-auth {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-width: 72px;
+      }
+
+      .header-signin {
+        min-height: 24px;
+        border: 1px solid var(--action-blue);
+        border-radius: 2px;
+        background: transparent;
+        color: var(--action-blue);
+        padding: 3px 8px;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.1;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .header-avatar {
+        width: 32px;
+        height: 32px;
+        border: 0;
+        border-radius: 50%;
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0)),
+          #a142f4;
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
       .deal {
         width: 100%;
         min-height: 40px;
+        margin: 0;
         background: var(--secondary-blue-100);
         color: var(--action-blue);
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        padding: 8px 12px;
+        padding: 8px;
+        border-radius: 0;
         font-size: 14px;
         line-height: 1.25;
       }
@@ -162,22 +210,54 @@
       }
 
       .shell {
-        width: min(100%, 576px);
+        width: min(100%, 656px);
         padding: 0 8px;
       }
 
       .checkout.with-deal .shell {
-        padding-top: 8px;
+        padding-top: 24px;
       }
 
-      .checkout.side-summary.summary-layout .shell {
-        width: min(100%, 968px);
-        padding-inline: 16px;
+      .checkout-heading {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .checkout-heading h1 {
+        margin: 0;
+        color: var(--black);
+        font-family: Merriweather, Georgia, serif;
+        font-size: 32px;
+        font-weight: 400;
+        line-height: 1.3;
+      }
+
+      .checkout-step-copy {
+        margin: 0 0 8px;
+        color: #7a7e85;
+        font-size: 13px;
+        line-height: 1.3;
+        text-align: right;
+      }
+
+      .checkout-step-copy span {
+        display: block;
+        font-weight: 400;
+      }
+
+      .checkout-step-copy strong {
+        display: block;
+        font-weight: 700;
       }
 
       .plan {
         width: 100%;
-        max-width: 560px;
+        max-width: 640px;
         margin: 0 auto 8px;
         background: var(--white);
         border: 0;
@@ -434,7 +514,7 @@
       }
 
       .flow {
-        max-width: 560px;
+        max-width: 640px;
         margin: 0 auto;
         border: 0;
         border-radius: 8px;
@@ -443,10 +523,6 @@
         display: flex;
         flex-direction: column;
         gap: 2px;
-      }
-
-      .checkout.side-summary.summary-layout .flow {
-        width: 100%;
       }
 
       .panel {
@@ -528,6 +604,13 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+
+      .payment-method-label {
+        color: var(--grey-500);
+        font-size: 16px;
+        font-weight: 400;
+        white-space: nowrap;
       }
 
       .link-button {
@@ -644,10 +727,41 @@
       .social-row {
         width: 100%;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 16px;
+      }
+
+      .social-stack {
+        width: 100%;
+        display: grid;
         gap: 8px;
+      }
+
+      .social-full {
+        min-height: 48px;
+        border-color: var(--grey-250);
+        color: var(--grey-700);
+        font-size: 14px;
+      }
+
+      .social-full .asset-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .last-used {
+        display: none;
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        border-radius: 4px;
+        background: var(--grey-200);
+        color: var(--black);
+        padding: 2px 4px;
+        font-size: 12px;
+        line-height: 1.25;
+        font-weight: 700;
       }
 
       .social-icon-only {
@@ -1556,6 +1670,174 @@
         gap: 24px;
       }
 
+      .review-box {
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+          var(--primary-blue-50);
+        padding: 16px;
+        color: var(--black);
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .review-charge {
+        margin: 0 0 16px;
+      }
+
+      .review-charge s {
+        color: var(--black);
+      }
+
+      .review-charge strong {
+        font-weight: 700;
+      }
+
+      .review-rows {
+        display: grid;
+        gap: 8px;
+      }
+
+      .review-row {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: 8px;
+        align-items: start;
+      }
+
+      .review-label {
+        color: var(--grey-700);
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+      }
+
+      .review-note {
+        margin: 16px 0 0;
+      }
+
+      .review-note em {
+        font-style: italic;
+      }
+
+      .payment-fields.card-payment {
+        gap: 24px;
+      }
+
+      .alipay-handoff {
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+        display: grid;
+        gap: 16px;
+      }
+
+      .alipay-qr-panel {
+        min-height: 128px;
+        padding: 12px 76px;
+        background: #f4f4f4;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .alipay-qr-copy {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.2;
+        text-align: left;
+      }
+
+      .alipay-qr-copy strong {
+        font-weight: 700;
+      }
+
+      .qr-code {
+        width: 112px;
+        height: 112px;
+        display: block;
+      }
+
+      .alipay-limit-note {
+        width: 100%;
+        padding: 12px 16px 12px 8px;
+        border-radius: 4px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+          #95d7d5;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        color: var(--black);
+      }
+
+      .alipay-limit-icon {
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--black);
+        border-radius: 50%;
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        line-height: 1;
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      .alipay-limit-note p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 18px;
+        font-style: italic;
+      }
+
+      .alipay-limit-note strong {
+        font-weight: 700;
+      }
+
+      .alipay-mobile-cta {
+        display: none;
+        width: 100%;
+        max-width: 360px;
+        justify-self: center;
+        border: 0;
+        border-radius: 4px;
+        background: var(--black);
+        color: var(--white);
+        padding: 12px 16px;
+        min-height: 43px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 16px;
+        line-height: 1.2;
+        cursor: pointer;
+      }
+
+      .alipay-mobile-cta:disabled {
+        background: var(--grey-400);
+        cursor: not-allowed;
+      }
+
+      .alipay-mobile-cta img {
+        width: 71px;
+        height: auto;
+        filter: brightness(0) invert(1);
+      }
+
+      .alipay-qr-panel.alipay-desktop-only {
+        display: grid;
+      }
+
+      .card-fields-group {
+        display: grid;
+        gap: 8px;
+      }
+
       .field-label {
         margin: 0 0 8px;
         font-size: 14px;
@@ -1650,6 +1932,10 @@
         position: relative;
       }
 
+      .billing-country-field {
+        margin-top: 24px;
+      }
+
       .country-menu {
         position: absolute;
         z-index: 5;
@@ -1742,13 +2028,12 @@
         max-width: 544px;
         margin: 0 auto;
         border: 0;
-        border-top: 1px dashed var(--grey-200);
-        border-bottom: 1px dashed var(--grey-200);
-        background: var(--white);
-        color: var(--grey-700);
-        padding: 12px 8px;
+        background: transparent;
+        color: var(--action-blue);
+        padding: 0;
         text-align: left;
         font-size: 14px;
+        text-decoration: underline;
       }
 
       .promo-form {
@@ -1867,6 +2152,12 @@
         font-size: 12px;
       }
 
+      .promo-loading {
+        margin: 0;
+        color: var(--grey-700);
+        font-size: 12px;
+      }
+
       .purchase {
         display: grid;
         gap: 16px;
@@ -1881,8 +2172,8 @@
       }
 
       .purchase .terms {
-        font-size: 14px;
-        line-height: 20px;
+        font-size: 12px;
+        line-height: 1.25;
       }
 
       .renewal {
@@ -1892,17 +2183,19 @@
       }
 
       .renewal strong {
-        font-weight: 700;
+        font-weight: 400;
       }
 
       .renewal .teal {
         color: var(--teal);
+        font-style: italic;
+        font-weight: 700;
       }
 
       .success-card {
         width: 100%;
-        max-width: 560px;
-        margin: 8px auto 0;
+        max-width: 640px;
+        margin: 24px auto 0;
         background: var(--white);
         border: 0;
         border-radius: 8px 8px 0 0;
@@ -1933,9 +2226,9 @@
 
       .success-card h2 {
         margin: 0;
-        font-family: Merriweather, Georgia, serif;
+        font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
         font-size: 24px;
-        font-weight: 400;
+        font-weight: 700;
       }
 
       .success-copy {
@@ -1996,29 +2289,36 @@
       }
 
       .payment-loading-page {
-        min-height: 360px;
+        width: 100%;
+        min-height: 100vh;
         display: grid;
         place-items: center;
-        padding: 72px 24px;
+        padding: 24px;
         text-align: center;
+        background: var(--white);
       }
 
       .payment-loading-content {
         display: grid;
         justify-items: center;
-        gap: 16px;
+        gap: 24px;
+      }
+
+      .payment-loading-logo {
+        margin-bottom: 8px;
       }
 
       .payment-loading-title {
         margin: 0;
-        font-size: 24px;
+        font-size: 32px;
         font-weight: 700;
+        line-height: 1.2;
       }
 
       .payment-loading-copy {
-        margin: 0;
+        margin: -8px 0 8px;
         color: var(--grey-700);
-        font-size: 14px;
+        font-size: 18px;
         line-height: 1.25;
       }
 
@@ -2135,60 +2435,15 @@
         display: none !important;
       }
 
-      @media (min-width: 900px) {
-        .checkout.side-summary.summary-layout .shell {
-          display: grid;
-          grid-template-columns: minmax(0, 560px) 360px;
-          align-items: stretch;
-          gap: 16px;
-        }
-
-        .checkout.side-summary.summary-layout .plan {
-          grid-column: 2;
-          grid-row: 1;
-          align-self: stretch;
-          display: flex;
-          flex-direction: column;
-          max-width: none;
-          min-height: 100%;
-          margin: 0;
-          background: rgba(255, 255, 255, 0.6);
-          padding: 32px 24px;
-        }
-
-        .checkout.side-summary.summary-layout .flow {
-          grid-column: 1;
-          grid-row: 1;
-          margin: 0;
-        }
-
-        .checkout.side-summary.summary-layout .plan .badge {
-          background: #788ac4;
-          border-radius: 20px;
-        }
-
-        .checkout.side-summary.summary-layout .plan .collapsed-copy,
-        .checkout.side-summary.summary-layout .plan .billing {
-          display: none;
-        }
-
-        .checkout.side-summary.summary-layout .plan .expanded-copy {
-          display: inline;
-        }
-
-        .checkout.side-summary.summary-layout .plan .billing-details {
-          display: grid;
-          gap: 8px;
-        }
-      }
-
       @media (max-width: 600px) {
         .header {
           padding-inline: 16px;
         }
 
-        .brand {
-          transform: scale(0.9);
+        .brand,
+        .brand-logo {
+          width: 207px;
+          max-width: calc(100vw - 120px);
         }
 
         .shell {
@@ -2197,18 +2452,35 @@
         }
 
         .checkout.with-deal .shell {
-          padding-top: 8px;
+          padding-top: 16px;
         }
 
         .plan,
         .flow,
-        .success-card {
-          max-width: 343px;
+        .success-card,
+        .checkout-heading {
+          max-width: none;
         }
 
-        .checkout.side-summary.summary-layout .plan,
-        .checkout.side-summary.summary-layout .flow {
-          max-width: none;
+        .checkout-heading {
+          padding: 0;
+        }
+
+        .checkout-heading h1 {
+          font-size: 28px;
+        }
+
+        .checkout-step-copy {
+          margin-bottom: 6px;
+          font-size: 12px;
+        }
+
+        .payment-loading-title {
+          font-size: 24px;
+        }
+
+        .payment-loading-copy {
+          font-size: 16px;
         }
 
         .plan {
@@ -2217,6 +2489,24 @@
 
         .completed-email {
           max-width: 128px;
+        }
+
+        .payment-method-label {
+          max-width: 96px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .alipay-desktop-only {
+          display: none;
+        }
+
+        .alipay-mobile-cta {
+          display: flex;
+        }
+
+        .alipay-handoff {
+          gap: 16px;
         }
 
         .field-grid {
@@ -2228,8 +2518,7 @@
         }
 
         .deal {
-          justify-content: flex-start;
-          padding-inline: 16px;
+          justify-content: center;
         }
 
         .social-auth-page.google {
@@ -2305,65 +2594,17 @@
     </style>
   </head>
   <body>
-    <main class="checkout side-summary" id="checkout">
-      <header class="header">
-        <button type="button" class="brand brand-link" data-action="reset-flow" aria-label="South China Morning Post - reset checkout">
-          <img class="brand-logo" src="assets/subscription-checkout/SouthChinaMorningPost-logo.svg" alt="South China Morning Post" />
-        </button>
-      </header>
+    <main class="checkout" id="checkout">
+      <header class="header" id="pageHeader"></header>
 
       <div class="deal hidden" id="deal">
         <img class="deal-icon" src="assets/subscription-checkout/check-circle-2.svg" alt="" />
-        <strong>Great choice!</strong>
-        <span>You're securing</span>
-        <strong>an excellent deal!</strong>
+        <span>You've chosen the</span>
+        <strong>Annual Standard plan</strong>
       </div>
 
       <section class="shell" id="shell">
-        <article class="plan" id="plan">
-          <div class="plan-row">
-            <h1>Standard: Annual</h1>
-            <span class="badge"><img class="tag-icon" src="assets/subscription-checkout/tag.svg" alt="" /> <span>Introductory offer</span></span>
-          </div>
-          <p class="plan-copy"><span class="collapsed-copy">HKD780 for a year. Renews at HKD960/year.</span><span class="expanded-copy">HKD780 for the first year. Renews at HKD960/year.</span></p>
-          <button type="button" class="billing" id="billingToggle">
-            <span class="chev"></span>
-            <span class="billing-open">See billing details</span>
-            <span class="billing-close">Hide billing details</span>
-          </button>
-          <div class="billing-details">
-            <div class="timeline-unit">
-              <div class="timeline-copy">
-                <img class="timeline-dot-icon" src="assets/subscription-checkout/Timeline dot.svg" alt="" />
-                <div>
-                  <p class="timeline-title">First year</p>
-                  <p class="timeline-subtitle offer">Intro rate · 19% off</p>
-                </div>
-              </div>
-              <div class="timeline-price">
-                <p>HKD780</p>
-                <s>HKD960</s>
-              </div>
-            </div>
-            <div class="timeline-unit">
-              <div class="timeline-copy">
-                <img class="timeline-dot-icon" src="assets/subscription-checkout/Timeline dot_outline.svg" alt="" />
-                <div>
-                  <p class="timeline-title">After that, billed yearly</p>
-                  <p class="timeline-subtitle">Standard rate · renews on 21 May 2027</p>
-                </div>
-              </div>
-              <div class="timeline-price">
-                <p>HKD960/yr</p>
-              </div>
-            </div>
-          </div>
-          <div class="pay-row">
-            <span>Pay today</span>
-            <strong><s>HKD960</s> HKD780.00</strong>
-          </div>
-        </article>
-
+        <div class="checkout-heading" id="checkoutHeading"></div>
         <section class="flow" id="flow" aria-live="polite"></section>
       </section>
     </main>
@@ -2376,6 +2617,7 @@
         password: "",
         passwordVisible: false,
         socialProvider: "",
+        paymentProvider: "",
         addNewCard: false,
         cardComplete: false,
         residenceCountry: "Hong Kong SAR",
@@ -2383,7 +2625,7 @@
         billingCountry: "",
         openCountryMenu: "",
         planExpanded: false,
-        initialPlanLoading: true,
+        initialPlanLoading: false,
         promoPlanLoading: false,
         promoDiscountApplied: false,
         promoOpen: false,
@@ -2395,6 +2637,7 @@
 
       const flow = document.querySelector("#flow");
       const checkout = document.querySelector("#checkout");
+      const pageHeader = document.querySelector("#pageHeader");
       const deal = document.querySelector("#deal");
       const shell = document.querySelector("#shell");
       const assetPath = "assets/subscription-checkout/";
@@ -2412,8 +2655,6 @@
         "Macau SAR",
       ];
 
-      attachBillingToggle();
-
       function isValidEmail(value) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
       }
@@ -2429,17 +2670,6 @@
         render();
       }
 
-      let initialPlanLoadTimer = null;
-
-      function startInitialPlanLoading() {
-        if (initialPlanLoadTimer) clearTimeout(initialPlanLoadTimer);
-        state.initialPlanLoading = true;
-        initialPlanLoadTimer = setTimeout(() => {
-          initialPlanLoadTimer = null;
-          if (state.initialPlanLoading) updateState({ initialPlanLoading: false });
-        }, CHECKOUT_LOADING_DELAY);
-      }
-
       function showAccountLoadingThen(screen, patch = {}) {
         setScreen("accountLoading");
         setTimeout(() => {
@@ -2447,92 +2677,45 @@
         }, CHECKOUT_LOADING_DELAY);
       }
 
-      function attachBillingToggle() {
-        const billingToggle = document.querySelector("#billingToggle");
-        if (!billingToggle) return;
-        billingToggle.addEventListener("click", () => {
-          state.planExpanded = !state.planExpanded;
-          render();
-        });
+      function isLoggedInHeader() {
+        return ["paymentMethod", "creditLoading", "credit", "appleLoading", "apple", "paymentLoading", "success", "already"].includes(state.screen);
       }
 
-      function planMarkup() {
-        if (state.initialPlanLoading || state.promoPlanLoading) {
-          const loadingLabel = state.initialPlanLoading ? "Loading plan summary" : "Updating plan summary";
-          return `
-            <article class="plan plan-loading" id="plan" aria-busy="true" aria-label="${loadingLabel}">
-              <div class="plan-row">
-                <span class="plan-skel-line" style="width:140px"></span>
-                <span class="plan-skel-line plan-skel-muted" style="width:112px; opacity:0"></span>
-              </div>
-              <span class="plan-skel-line" style="width:min(260px, 76%)"></span>
-              <span class="plan-skel-line plan-skel-muted" style="width:109px; height:14px"></span>
-              <div class="pay-row">
-                <span class="plan-skel-line" style="width:68px; height:16px"></span>
-                <span class="plan-skel-line" style="width:141px; height:16px"></span>
-              </div>
-            </article>
-          `;
-        }
-
-        const promo = state.promoDiscountApplied;
-        const firstYear = promo ? "HKD480" : "HKD780";
-        const payToday = promo ? "HKD480.00" : "HKD780.00";
-        const summary = promo
-          ? "HKD480 for the first year. Renews at HKD960/year."
-          : "HKD780 for a year. Renews at HKD960/year.";
-        const expandedSummary = promo
-          ? "HKD480 for the first year. Renews at HKD960/year."
-          : "HKD780 for the first year. Renews at HKD960/year.";
-        const badgeText = promo ? "SCMPDISCOUNT50" : "Introductory offer";
-        const badgeClass = promo ? " promo-badge" : "";
-        const offerCopy = promo ? "Promo code · 50% off" : "Intro rate · 19% off";
-        const openClass = state.planExpanded ? " open" : "";
+      function headerMarkup() {
+        const rhs = isLoggedInHeader()
+          ? `<button type="button" class="header-avatar" data-action="edit-account" aria-label="Signed in as ${state.email || "abc@abc.com"}">A</button>`
+          : `<button type="button" class="header-signin" data-action="social-login" data-provider="google">SIGN IN</button>`;
 
         return `
-          <article class="plan${openClass}" id="plan">
-            <div class="plan-row">
-              <h1>Standard: Annual</h1>
-              <span class="badge${badgeClass}"><img class="tag-icon" src="${asset("tag.svg")}" alt="" /> <span>${badgeText}</span></span>
-            </div>
-            <p class="plan-copy"><span class="collapsed-copy">${summary}</span><span class="expanded-copy">${expandedSummary}</span></p>
-            <button type="button" class="billing" id="billingToggle">
-              <span class="chev"></span>
-              <span class="billing-open">See billing details</span>
-              <span class="billing-close">Hide billing details</span>
+          <div class="header-inner">
+            <button type="button" class="brand brand-link" data-action="reset-flow" aria-label="South China Morning Post - reset checkout">
+              <img class="brand-logo" src="${asset("SouthChinaMorningPost-logo.svg")}" alt="South China Morning Post" />
             </button>
-            <div class="billing-details">
-              <div class="timeline-unit">
-                <div class="timeline-copy">
-                  <img class="timeline-dot-icon" src="${asset("Timeline dot.svg")}" alt="" />
-                  <div>
-                    <p class="timeline-title">First year</p>
-                    <p class="timeline-subtitle offer">${offerCopy}</p>
-                  </div>
-                </div>
-                <div class="timeline-price">
-                  <p>${firstYear}</p>
-                  <s>HKD960</s>
-                </div>
-              </div>
-              <div class="timeline-unit">
-                <div class="timeline-copy">
-                  <img class="timeline-dot-icon" src="${asset("Timeline dot_outline.svg")}" alt="" />
-                  <div>
-                    <p class="timeline-title">After that, billed yearly</p>
-                    <p class="timeline-subtitle">Standard rate · renews on 21 May 2027</p>
-                  </div>
-                </div>
-                <div class="timeline-price">
-                  <p>HKD960/yr</p>
-                </div>
-              </div>
-            </div>
-            <div class="pay-row">
-              <span>Pay today</span>
-              <strong><s>HKD960</s> ${payToday}</strong>
-            </div>
-          </article>
+            <div class="header-auth">${rhs}</div>
+          </div>
+        `;
+      }
+
+      function checkoutHeadingMarkup() {
+        const isPaymentStep = ["paymentMethod", "creditLoading", "credit", "appleLoading", "apple"].includes(state.screen);
+        const stepNumber = isPaymentStep ? "2" : "1";
+        const stepLabel = isPaymentStep ? "Payment & Review" : "Create account or log in";
+
+        return `
+          <div class="checkout-heading" id="checkoutHeading">
+            <h1>Checkout</h1>
+            <p class="checkout-step-copy">
+              <span>Step ${stepNumber} of 2</span>
+              <strong>${stepLabel}</strong>
+            </p>
+          </div>
+        `;
+      }
+
+      function standardShellMarkup() {
+        return `
+          ${checkoutHeadingMarkup()}
+          <section class="flow" id="flow" aria-live="polite"></section>
         `;
       }
 
@@ -2545,6 +2728,9 @@
         const email = options.email
           ? `<span class="completed-email">${state.email || "abc@abc.com"}</span>`
           : "";
+        const method = options.method
+          ? `<span class="payment-method-label">${options.method}</span>`
+          : "";
         const changeAction = options.action || "edit-account";
         const change = options.change
           ? `<button type="button" class="link-button" data-action="${changeAction}">${options.change}</button>`
@@ -2555,6 +2741,7 @@
               ${stepMark}
               <span class="step-label">${title}</span>
               ${email}
+              ${method}
             </div>
             ${change}
           </div>
@@ -2575,17 +2762,17 @@
               <h2 class="card-title">Start your subscription</h2>
               <p class="card-subtitle">New or returning? Either way, start here.</p>
               <div class="form-width">
-                <div class="social-row" aria-label="Social sign in options">
-                  <button type="button" class="social" data-action="social-login" data-provider="google" aria-label="Continue with Google">
+                <div class="social-stack" aria-label="Social sign in options">
+                  <button type="button" class="social social-full" data-action="social-login" data-provider="google">
                     <img class="asset-icon google" src="${asset("icon_google.svg")}" alt="" />
                     <span>Continue with Google</span>
-                    <span class="social-badge">Last used</span>
+                    <span class="last-used">Last used</span>
                   </button>
-                  <button type="button" class="social" data-action="social-login" data-provider="apple" aria-label="Continue with Apple">
+                  <button type="button" class="social social-full" data-action="social-login" data-provider="apple">
                     <img class="asset-icon apple" src="${asset("icon-apple.svg")}" alt="" />
                     <span>Continue with Apple</span>
                   </button>
-                  <button type="button" class="social" data-action="social-login" data-provider="facebook" aria-label="Continue with Facebook">
+                  <button type="button" class="social social-full" data-action="social-login" data-provider="facebook">
                     <img class="asset-icon facebook" src="${asset("icon_fb.svg")}" alt="" />
                     <span>Continue with Facebook</span>
                   </button>
@@ -2808,7 +2995,8 @@
         return `
           <section class="payment-loading-page" role="status" aria-live="polite">
             <div class="payment-loading-content">
-              <h2 class="payment-loading-title">Processing your payment...</h2>
+              <span class="scmp-flag-mini payment-loading-logo" aria-hidden="true"></span>
+              <h2 class="payment-loading-title">Processing your payment</h2>
               <p class="payment-loading-copy">Please wait while we confirm your subscription.</p>
               <span class="account-loading-spinner" aria-hidden="true"></span>
             </div>
@@ -2836,8 +3024,31 @@
         `;
       }
 
+      function reviewBlock() {
+        const discounted = state.promoDiscountApplied;
+        const price = discounted ? "HKD480.00" : "HKD780.00";
+        return `
+          <div class="review-box">
+            <p class="review-charge">You are about to be charged <s>HKD960.00</s> <strong>${price}</strong></p>
+            <div class="review-rows">
+              <div class="review-row"><span class="review-label">Starting</span><span>Today</span></div>
+              <div class="review-row"><span class="review-label">Duration</span><span>1 year of access</span></div>
+              <div class="review-row"><span class="review-label">Price</span><span>${price}</span></div>
+            </div>
+            <p class="review-note">You will be billed HKD960.00 starting on 2 Jun 2027.</p>
+          </div>
+        `;
+      }
+
       function promoBlock() {
         const code = state.promoCode.trim();
+        if (state.promoPlanLoading) {
+          return `
+            <div class="promo-form" aria-live="polite">
+              <p class="promo-loading">Applying promo code...</p>
+            </div>
+          `;
+        }
         if (state.promoStatus === "applied") {
           return `
             <div class="promo-form">
@@ -2865,6 +3076,19 @@
           `;
         }
         return `<button type="button" class="promo" data-action="show-promo">Got a promo code?</button>`;
+      }
+
+      function qrCodeMarkup() {
+        return `<img class="qr-code" src="${asset("QR-code.png")}" alt="Alipay QR code" />`;
+      }
+
+      function alipayLimitNoteMarkup() {
+        return `
+          <div class="alipay-limit-note">
+            <span class="alipay-limit-icon">!</span>
+            <p>Please check that your <strong>AlipayHK transaction limit is set to at least HK$3,000</strong> to ensure successful billing and auto-renewal.</p>
+          </div>
+        `;
       }
 
       function forgotPanel() {
@@ -2928,8 +3152,54 @@
       }
 
       function creditPanel() {
-        const addOpen = state.addNewCard ? " open" : "";
-        const payDisabled = state.terms && (state.cardComplete || !state.addNewCard) ? "" : "disabled";
+        const isAlipay = state.paymentProvider === "alipay";
+        const payDisabled = state.terms ? "" : "disabled";
+        if (isAlipay) {
+          return `
+            <section class="panel">
+              ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
+            </section>
+            <section class="panel expanded">
+              ${stepHeader(2, "Payment", { change: "Change", action: "change-payment", method: "AlipayHK" })}
+              <div class="card-body">
+                ${reviewBlock()}
+                <div class="purchase">
+                  <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
+                  <label class="checkbox-row terms">
+                    <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
+                    <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
+                  </label>
+                  <div class="alipay-handoff">
+                    <div class="alipay-qr-panel alipay-desktop-only">
+                      <p class="alipay-qr-copy">Please scan <strong>the QR code</strong> with your phone to continue</p>
+                      ${qrCodeMarkup()}
+                    </div>
+                    <button type="button" class="alipay-mobile-cta" data-action="pay" ${payDisabled}>
+                      <span>Subscribe with</span>
+                      <img src="${asset("Alipay.svg")}" alt="Alipay" />
+                    </button>
+                    ${alipayLimitNoteMarkup()}
+                  </div>
+                  <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
+                </div>
+              </div>
+            </section>
+          `;
+        }
+        const paymentFields = isAlipay
+          ? ""
+          : `
+              <div class="card-fields-group">
+                <label class="field card-number">
+                  <img class="asset-icon card-input-icon" src="${asset("credit-card.svg")}" alt="" />
+                  <input id="cardInput" inputmode="numeric" placeholder="Credit or Debit Card number" value="${state.cardComplete ? "4242 4242 4242 4242" : ""}" />
+                </label>
+                <div class="field-grid">
+                  <label class="field"><input id="expiryInput" placeholder="MM/YY" value="${state.cardComplete ? "12/28" : ""}" /></label>
+                  <label class="field"><input id="cvvInput" placeholder="CVC" value="${state.cardComplete ? "123" : ""}" /></label>
+                </div>
+              </div>
+            `;
         return `
           <section class="panel">
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
@@ -2937,48 +3207,22 @@
           <section class="panel expanded">
             ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
             <div class="card-body">
-              <div class="payment-fields">
-                <div>
-                  <p class="field-label">Your credit and debit cards</p>
-                  <div class="radio-row">
-                    <span class="radio-side">
-                      <button type="button" class="radio ${state.addNewCard ? "" : "active"}" data-action="saved-card" aria-label="Use saved card"></button>
-                      <img class="payment-logo card" src="${asset("Visa.svg")}" alt="Visa" />
-                    </span>
-                    <span>*4242</span>
-                  </div>
-                  <div class="radio-row">
-                    <span class="radio-side">
-                      <button type="button" class="radio ${state.addNewCard ? "active" : ""}" data-action="add-card" aria-label="Add a new card"></button>
-                      <span>Add a new card</span>
-                    </span>
-                  </div>
-                  <div class="new-card${addOpen}">
-                    <label class="field card-number">
-                      <img class="asset-icon card-input-icon" src="${asset("credit-card.svg")}" alt="" />
-                      <input id="cardInput" inputmode="numeric" placeholder="Card number" value="${state.cardComplete ? "4242 4242 4242 4242" : ""}" />
-                    </label>
-                    <div class="field-grid">
-                      <label class="field"><input id="expiryInput" placeholder="MM/YY" value="${state.cardComplete ? "12/28" : ""}" /></label>
-                      <label class="field"><input id="cvvInput" placeholder="CVV" value="${state.cardComplete ? "123" : ""}" /></label>
-                    </div>
-                  </div>
-                </div>
-
+              ${reviewBlock()}
+              ${promoBlock()}
+              <div class="payment-fields card-payment">
+                ${paymentFields}
                 <div>
                   ${countrySelect("residence", "Country of residence", state.residenceCountry, "Select a country or region")}
                   <label class="checkbox-row" style="margin-top:8px">
                     <input id="billingSameInput" type="checkbox" ${state.billingSameCountry ? "checked" : ""} />
                     <span>My billing address is in the same country</span>
                   </label>
-                  ${state.billingSameCountry ? "" : countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}
+                  ${state.billingSameCountry ? "" : `<div class="billing-country-field">${countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}</div>`}
                 </div>
               </div>
 
-              ${promoBlock()}
-
               <div class="purchase">
-                <p class="renewal">You can <strong>cancel your renewal anytime</strong> from your account settings. <span class="teal">We'll send you an email reminder 30 days before each renewal.</span></p>
+                <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
                 <label class="checkbox-row terms">
                   <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
@@ -3062,6 +3306,8 @@
           <section class="panel expanded">
             ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
             <div class="card-body">
+              ${reviewBlock()}
+              ${promoBlock()}
               <div class="payment-fields">
                 <div>
                   ${countrySelect("residence", "Country of residence", state.residenceCountry, "Select a country or region")}
@@ -3070,11 +3316,10 @@
                   <input id="billingSameInput" type="checkbox" ${state.billingSameCountry ? "checked" : ""} />
                   <span>My billing address is in the same country</span>
                 </label>
-                ${state.billingSameCountry ? "" : countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}
+                ${state.billingSameCountry ? "" : `<div class="billing-country-field">${countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}</div>`}
               </div>
-              ${promoBlock()}
               <div class="purchase">
-                <p class="renewal">You can <strong>cancel your renewal anytime</strong> from your account settings. <span class="teal">We'll send you an email reminder 30 days before each renewal.</span></p>
+                <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
                 <label class="checkbox-row terms">
                   <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
@@ -3124,11 +3369,11 @@
 
       function render() {
         const authMode = ["socialAuth", "socialLoading", "paymentLoading"].includes(state.screen);
-        const planMode = !authMode && !["success", "already"].includes(state.screen);
+        const dealScreens = ["account", "password", "accountLoading", "forgot", "paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
+        pageHeader.innerHTML = headerMarkup();
         checkout.classList.toggle("auth-mode", authMode);
-        checkout.classList.toggle("summary-layout", planMode);
-        checkout.classList.toggle("with-deal", !authMode && ["paymentMethod", "creditLoading", "credit", "apple", "appleLoading", "success", "already"].includes(state.screen));
-        deal.classList.toggle("hidden", !["paymentMethod", "creditLoading", "credit", "apple", "appleLoading"].includes(state.screen));
+        checkout.classList.toggle("with-deal", !authMode && dealScreens.includes(state.screen));
+        deal.classList.toggle("hidden", authMode || !dealScreens.includes(state.screen));
 
         if (state.screen === "socialAuth") {
           shell.innerHTML = socialAuthPanel();
@@ -3155,15 +3400,11 @@
           return;
         }
 
-        if (!document.querySelector("#plan")) {
-          shell.innerHTML = `
-            ${planMarkup()}
-            <section class="flow" id="flow" aria-live="polite"></section>
-          `;
+        if (!document.querySelector("#flow") || !document.querySelector("#checkoutHeading")) {
+          shell.innerHTML = standardShellMarkup();
         } else {
-          document.querySelector("#plan").outerHTML = planMarkup();
+          document.querySelector("#checkoutHeading").outerHTML = checkoutHeadingMarkup();
         }
-        attachBillingToggle();
 
         const target = document.querySelector("#flow");
         if (state.screen === "password") target.innerHTML = passwordPanel();
@@ -3308,15 +3549,18 @@
         }
         if (action === "remove-promo") updateState({ promoOpen: false, promoCode: "", promoStatus: "", promoPlanLoading: false, promoDiscountApplied: false });
         if (action === "choose-credit") {
-          setScreen("creditLoading");
+          state.paymentProvider = "credit";
+          setScreen("creditLoading", { terms: false, appleTerms: false });
           setTimeout(() => setScreen("credit"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "choose-alipay") {
-          setScreen("creditLoading");
+          state.paymentProvider = "alipay";
+          setScreen("creditLoading", { terms: false, appleTerms: false });
           setTimeout(() => setScreen("credit"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "choose-apple") {
-          setScreen("appleLoading");
+          state.paymentProvider = "apple";
+          setScreen("appleLoading", { terms: false, appleTerms: false });
           setTimeout(() => setScreen("apple"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "saved-card") setScreen("credit", { addNewCard: false, cardComplete: false });
@@ -3334,6 +3578,7 @@
             password: "",
             passwordVisible: false,
             socialProvider: "",
+            paymentProvider: "",
             addNewCard: false,
             cardComplete: false,
             residenceCountry: "Hong Kong SAR",
@@ -3341,7 +3586,7 @@
             billingCountry: "",
             openCountryMenu: "",
             planExpanded: false,
-            initialPlanLoading: true,
+            initialPlanLoading: false,
             promoPlanLoading: false,
             promoDiscountApplied: false,
             promoOpen: false,
@@ -3350,11 +3595,9 @@
             terms: false,
             appleTerms: false,
           });
-          startInitialPlanLoading();
         }
       });
 
-      startInitialPlanLoading();
       render();
     </script>
   </body>
