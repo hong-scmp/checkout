@@ -54,7 +54,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding-bottom: 56px;
       }
 
       .checkout.with-deal {
@@ -214,6 +213,47 @@
         padding: 0 8px;
       }
 
+      .checkout-footer {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 16px 40px;
+        color: #646971;
+        font-size: 13px;
+        line-height: 28px;
+        pointer-events: none;
+      }
+
+      .checkout-footer.is-fixed {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 10;
+      }
+
+      .checkout-footer-links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
+        width: 100%;
+        max-width: 640px;
+      }
+
+      .checkout-footer a {
+        color: inherit;
+        text-decoration: none;
+        pointer-events: auto;
+      }
+
+      .checkout-footer-separator {
+        width: 1px;
+        height: 14px;
+        background: #d3d4d6;
+        flex: none;
+      }
+
       .checkout.with-deal .shell {
         padding-top: 24px;
       }
@@ -222,6 +262,7 @@
         width: 100%;
         max-width: 640px;
         margin: 0 auto 16px;
+        padding: 0 16px;
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
@@ -2466,10 +2507,6 @@
           max-width: none;
         }
 
-        .checkout-heading {
-          padding: 0;
-        }
-
         .checkout-heading h1 {
           font-size: 28px;
         }
@@ -2477,6 +2514,16 @@
         .checkout-step-copy {
           margin-bottom: 6px;
           font-size: 12px;
+        }
+
+        .checkout-footer {
+          padding-inline: 16px;
+        }
+
+        .checkout-footer-links {
+          gap: 8px;
+          font-size: 12px;
+          white-space: nowrap;
         }
 
         .payment-loading-title {
@@ -2611,6 +2658,16 @@
         <div class="checkout-heading" id="checkoutHeading"></div>
         <section class="flow" id="flow" aria-live="polite"></section>
       </section>
+
+      <footer class="checkout-footer hidden" id="checkoutFooter">
+        <nav class="checkout-footer-links" aria-label="Checkout footer">
+          <a href="#">Subscription FAQ</a>
+          <span class="checkout-footer-separator" aria-hidden="true"></span>
+          <a href="#">Privacy &amp; Policy</a>
+          <span class="checkout-footer-separator" aria-hidden="true"></span>
+          <a href="#">Terms &amp; Conditions</a>
+        </nav>
+      </footer>
     </main>
 
     <script>
@@ -2644,6 +2701,7 @@
       const pageHeader = document.querySelector("#pageHeader");
       const deal = document.querySelector("#deal");
       const shell = document.querySelector("#shell");
+      const checkoutFooter = document.querySelector("#checkoutFooter");
       const assetPath = "assets/subscription-checkout/";
       const asset = (name) => `${assetPath}${name}`;
       const CHECKOUT_LOADING_DELAY = 3000;
@@ -2681,6 +2739,31 @@
         }, CHECKOUT_LOADING_DELAY);
       }
 
+      function updateFooterVisibility() {
+        if (!checkoutFooter) return;
+        const authMode = ["socialAuth", "socialLoading", "paymentLoading"].includes(state.screen);
+        if (authMode) {
+          checkoutFooter.classList.add("hidden");
+          checkoutFooter.classList.remove("is-fixed");
+          return;
+        }
+        checkoutFooter.classList.remove("hidden");
+        checkoutFooter.classList.remove("is-fixed");
+        const footerHeight = checkoutFooter.getBoundingClientRect().height || 60;
+        const visibleChrome = [pageHeader, deal, shell].filter((node) => {
+          return node && getComputedStyle(node).display !== "none";
+        });
+        const contentBottom = visibleChrome.reduce((bottom, node) => {
+          return Math.max(bottom, node.getBoundingClientRect().bottom);
+        }, 0);
+        const canDock = contentBottom + footerHeight <= window.innerHeight;
+        checkoutFooter.classList.toggle("is-fixed", canDock);
+      }
+
+      function scheduleFooterVisibility() {
+        requestAnimationFrame(updateFooterVisibility);
+      }
+
       function isLoggedInHeader() {
         return ["paymentMethod", "creditLoading", "credit", "appleLoading", "apple", "paymentLoading", "success", "already"].includes(state.screen);
       }
@@ -2703,7 +2786,7 @@
       function checkoutHeadingMarkup() {
         const isPaymentStep = ["paymentMethod", "creditLoading", "credit", "appleLoading", "apple"].includes(state.screen);
         const stepNumber = isPaymentStep ? "2" : "1";
-        const stepLabel = isPaymentStep ? "Payment & Review" : "Create account or log in";
+        const stepLabel = isPaymentStep ? "Payment" : "Create account or log in";
 
         return `
           <div class="checkout-heading" id="checkoutHeading">
@@ -3381,26 +3464,31 @@
 
         if (state.screen === "socialAuth") {
           shell.innerHTML = socialAuthPanel();
+          scheduleFooterVisibility();
           return;
         }
 
         if (state.screen === "socialLoading") {
           shell.innerHTML = socialLoadingPanel();
+          scheduleFooterVisibility();
           return;
         }
 
         if (state.screen === "paymentLoading") {
           shell.innerHTML = paymentLoadingPanel();
+          scheduleFooterVisibility();
           return;
         }
 
         if (state.screen === "success") {
           successPanel();
+          scheduleFooterVisibility();
           return;
         }
 
         if (state.screen === "already") {
           alreadySubscribed();
+          scheduleFooterVisibility();
           return;
         }
 
@@ -3420,7 +3508,10 @@
         else if (state.screen === "appleLoading") target.innerHTML = appleSkeleton();
         else if (state.screen === "apple") target.innerHTML = applePanel();
         else target.innerHTML = accountPanel();
+        scheduleFooterVisibility();
       }
+
+      window.addEventListener("resize", scheduleFooterVisibility);
 
       document.addEventListener("input", (event) => {
         if (event.target.id === "emailInput") {
