@@ -654,6 +654,10 @@
         gap: 24px;
       }
 
+      .payment-review-body {
+        gap: 24px;
+      }
+
       .forgot-message {
         width: 100%;
         display: grid;
@@ -3206,7 +3210,7 @@
           </section>
           <section class="panel expanded">
             ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
-            <div class="card-body">
+            <div class="card-body payment-review-body">
               ${reviewBlock()}
               ${promoBlock()}
               <div class="payment-fields card-payment">
