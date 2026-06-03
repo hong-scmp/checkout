@@ -93,7 +93,7 @@
         max-width: 1088px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
       }
 
       .brand {
@@ -137,44 +137,6 @@
         letter-spacing: 0;
         font-weight: 700;
         white-space: nowrap;
-      }
-
-      .header-auth {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        min-width: 72px;
-      }
-
-      .header-signin {
-        min-height: 24px;
-        border: 1px solid var(--action-blue);
-        border-radius: 2px;
-        background: transparent;
-        color: var(--action-blue);
-        padding: 3px 8px;
-        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
-        font-size: 14px;
-        line-height: 1.1;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .header-avatar {
-        width: 32px;
-        height: 32px;
-        border: 0;
-        border-radius: 50%;
-        background:
-          linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0)),
-          #a142f4;
-        color: var(--white);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        font-size: 15px;
-        font-weight: 700;
       }
 
       .deal {
@@ -804,6 +766,54 @@
       .social-full .asset-icon {
         width: 24px;
         height: 24px;
+      }
+
+      .linked-social-copy {
+        width: 100%;
+        display: grid;
+        gap: 8px;
+        text-align: center;
+      }
+
+      .linked-social-copy .card-title,
+      .linked-social-copy .card-subtitle {
+        margin: 0;
+      }
+
+      .linked-social-field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .linked-social-button {
+        width: 100%;
+        max-width: 360px;
+        min-height: 48px;
+        border: 1px solid var(--grey-250);
+        border-radius: 8px;
+        background: var(--black);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 16px;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-transform: uppercase;
+        transition: background-color 0.16s ease, border-color 0.16s ease;
+      }
+
+      .linked-social-button:hover {
+        background: var(--grey-900);
+      }
+
+      .linked-social-button .asset-icon {
+        width: 22px;
+        height: 22px;
       }
 
       .last-used {
@@ -2856,21 +2866,12 @@
         `;
       }
 
-      function isLoggedInHeader() {
-        return ["paymentMethod", "creditLoading", "credit", "appleLoading", "apple", "paymentLoading", "success", "already"].includes(state.screen);
-      }
-
       function headerMarkup() {
-        const rhs = isLoggedInHeader()
-          ? `<button type="button" class="header-avatar" data-action="edit-account" aria-label="Signed in as ${state.email || "abc@abc.com"}">A</button>`
-          : `<button type="button" class="header-signin" data-action="social-login" data-provider="google">SIGN IN</button>`;
-
         return `
           <div class="header-inner">
             <button type="button" class="brand brand-link" data-action="reset-flow" aria-label="South China Morning Post - reset checkout">
               <img class="brand-logo" src="${asset("SouthChinaMorningPost-logo.svg")}" alt="South China Morning Post" />
             </button>
-            <div class="header-auth">${rhs}</div>
           </div>
         `;
       }
@@ -3004,6 +3005,34 @@
                 </div>
                 <button type="button" class="cta" data-action="login" ${canLogin ? "" : "disabled"}>Log in</button>
               </div>
+            </div>
+          </section>
+          <section class="panel">
+            ${stepHeader(2, "Payment", { disabled: true })}
+          </section>
+        `;
+      }
+
+      function linkedGooglePanel() {
+        const accountEmail = state.email || "abc@gmail.com";
+        return `
+          <section class="panel expanded">
+            ${stepHeader(1, "Account")}
+            <div class="card-body short-content">
+              <div class="linked-social-copy">
+                <h2 class="card-title">You already have an account</h2>
+                <p class="card-subtitle">This email is linked to Google. Sign in with Google to continue.</p>
+              </div>
+              <div class="form-width" style="gap:24px">
+                <div class="field linked-social-field">
+                  <span>${accountEmail}</span>
+                  <button type="button" class="field-link" data-action="edit-account">Change</button>
+                </div>
+              </div>
+              <button type="button" class="linked-social-button" data-action="linked-google">
+                <img class="asset-icon google" src="${asset("icon_google.svg")}" alt="" />
+                <span>Continue with Google</span>
+              </button>
             </div>
           </section>
           <section class="panel">
@@ -3548,7 +3577,7 @@
 
       function render() {
         const authMode = ["socialAuth", "socialLoading", "paymentLoading"].includes(state.screen);
-        const dealScreens = ["account", "password", "accountLoading", "forgot", "paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
+        const dealScreens = ["account", "password", "linkedGoogle", "accountLoading", "forgot", "paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
         const paymentStepScreens = ["paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
         pageHeader.innerHTML = headerMarkup();
         updateDealMessage(paymentStepScreens.includes(state.screen));
@@ -3594,6 +3623,7 @@
 
         const target = document.querySelector("#flow");
         if (state.screen === "password") target.innerHTML = passwordPanel();
+        else if (state.screen === "linkedGoogle") target.innerHTML = linkedGooglePanel();
         else if (state.screen === "accountLoading") target.innerHTML = accountLoadingPanel();
         else if (state.screen === "forgot") target.innerHTML = forgotPanel();
         else if (state.screen === "paymentMethod") target.innerHTML = paymentMethodPanel();
@@ -3686,11 +3716,14 @@
             showAccountLoadingThen("already");
           } else if (state.email.toLowerCase() === "abc@abc.com") {
             showAccountLoadingThen("password");
+          } else if (state.email.toLowerCase() === "abc@gmail.com") {
+            showAccountLoadingThen("linkedGoogle");
           } else {
             showAccountLoadingThen("paymentMethod");
           }
         }
         if (action === "social-login") setScreen("socialAuth", { socialProvider: actionTarget.dataset.provider || "google" });
+        if (action === "linked-google") setScreen("socialAuth", { socialProvider: "google" });
         if (action === "social-back") setScreen("account");
         if (action === "social-account-continue") {
           setScreen("socialLoading", { email: "abc@abc.com" });
