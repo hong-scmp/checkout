@@ -2500,6 +2500,25 @@
           padding-top: 16px;
         }
 
+        .deal {
+          justify-content: flex-start;
+          gap: 12px;
+          padding: 16px;
+          font-size: 14px;
+          line-height: 1.25;
+          text-align: left;
+        }
+
+        .deal span {
+          flex: 1;
+          min-width: 0;
+          max-width: 100%;
+        }
+
+        .deal-icon {
+          margin-top: 0;
+        }
+
         .plan,
         .flow,
         .success-card,
@@ -2650,8 +2669,7 @@
 
       <div class="deal hidden" id="deal">
         <img class="deal-icon" src="assets/subscription-checkout/check-circle-2.svg" alt="" />
-        <span>You've chosen the</span>
-        <strong>Annual Standard plan</strong>
+        <span>You're subscribing to <strong>Standard: Annual</strong> - just two more steps to go.</span>
       </div>
 
       <section class="shell" id="shell">
@@ -2762,6 +2780,14 @@
 
       function scheduleFooterVisibility() {
         requestAnimationFrame(updateFooterVisibility);
+      }
+
+      function updateDealMessage(isPaymentStep) {
+        const stepsCopy = isPaymentStep ? "one more step" : "two more steps";
+        deal.innerHTML = `
+          <img class="deal-icon" src="${asset("check-circle-2.svg")}" alt="" />
+          <span>You're subscribing to <strong>Standard: Annual</strong> - just ${stepsCopy} to go.</span>
+        `;
       }
 
       function isLoggedInHeader() {
@@ -3457,7 +3483,9 @@
       function render() {
         const authMode = ["socialAuth", "socialLoading", "paymentLoading"].includes(state.screen);
         const dealScreens = ["account", "password", "accountLoading", "forgot", "paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
+        const paymentStepScreens = ["paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
         pageHeader.innerHTML = headerMarkup();
+        updateDealMessage(paymentStepScreens.includes(state.screen));
         checkout.classList.toggle("auth-mode", authMode);
         checkout.classList.toggle("with-deal", !authMode && dealScreens.includes(state.screen));
         deal.classList.toggle("hidden", authMode || !dealScreens.includes(state.screen));
