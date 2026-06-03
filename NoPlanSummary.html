@@ -2063,6 +2063,10 @@
         color: var(--black);
       }
 
+      .select-field.invalid {
+        border: 2px solid var(--red);
+      }
+
       .select-value {
         display: inline-flex;
         align-items: center;
@@ -2162,6 +2166,20 @@
         height: 16px;
         margin: 0;
         accent-color: var(--black);
+      }
+
+      .checkbox-row.invalid {
+        color: var(--red);
+      }
+
+      .checkbox-row.invalid input {
+        outline: 2px solid var(--red);
+        outline-offset: 1px;
+      }
+
+      .payment-error {
+        display: block;
+        margin-top: 4px;
       }
 
       .promo {
@@ -2886,6 +2904,7 @@
         promoStatus: "",
         terms: false,
         appleTerms: false,
+        paymentErrors: {},
       };
 
       const flow = document.querySelector("#flow");
@@ -2911,6 +2930,49 @@
 
       function isValidEmail(value) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+      }
+
+      function paymentError(key) {
+        return state.paymentErrors?.[key] || "";
+      }
+
+      function paymentErrorMarkup(key) {
+        const message = paymentError(key);
+        return message ? `<span class="error payment-error">${message}</span>` : "";
+      }
+
+      function validatePayment() {
+        const errors = {};
+        const provider = state.paymentProvider || "credit";
+        if (provider === "credit" && !state.cardComplete) {
+          errors.card = "Please enter your card details.";
+        }
+        if (!state.residenceCountry) {
+          errors.residenceCountry = "Please select your country of residence.";
+        }
+        if (!state.billingSameCountry && !state.billingCountry) {
+          errors.billingCountry = "Please select your billing country.";
+        }
+        if (provider === "apple") {
+          if (!state.appleTerms) errors.terms = "Please agree to the terms and conditions.";
+        } else if (!state.terms) {
+          errors.terms = "Please agree to the terms and conditions.";
+        }
+        return errors;
+      }
+
+      function clearPaymentErrors(...keys) {
+        if (!state.paymentErrors) state.paymentErrors = {};
+        keys.forEach((key) => delete state.paymentErrors[key]);
+      }
+
+      function showPaymentErrors(errors) {
+        state.paymentErrors = errors;
+        render();
+        requestAnimationFrame(() => {
+          document.querySelector(".payment-error, .field.invalid, .select-field.invalid, .checkbox-row.invalid")
+            ?.scrollIntoView({ block: "center", behavior: "smooth" });
+        });
       }
 
       function setScreen(screen, patch = {}) {
@@ -3313,6 +3375,8 @@
       function countrySelect(target, label, value, placeholder) {
         const selectedValue = value || placeholder;
         const menuOpen = state.openCountryMenu === target;
+        const errorKey = target === "billing" ? "billingCountry" : "residenceCountry";
+        const error = paymentError(errorKey);
         const options = countries.map((country) => `
           <button type="button" class="country-option${country === value ? " selected" : ""}" data-action="select-country" data-target="${target}" data-country="${country}">
             ${country}
@@ -3321,11 +3385,12 @@
         return `
           <div class="select-wrap">
             <p class="field-label">${label}</p>
-            <button type="button" class="select-field" data-action="toggle-country" data-target="${target}" aria-expanded="${menuOpen}">
+            <button type="button" class="select-field${error ? " invalid" : ""}" data-action="toggle-country" data-target="${target}" aria-expanded="${menuOpen}">
               <span class="select-value"><img class="asset-icon select-icon" src="${asset("globe.svg")}" alt="" /> ${selectedValue}</span>
               <span class="chev"></span>
             </button>
             ${menuOpen ? `<div class="country-menu">${options}</div>` : ""}
+            ${paymentErrorMarkup(errorKey)}
           </div>
         `;
       }
@@ -3479,7 +3544,8 @@
 
       function creditPanel() {
         const isAlipay = state.paymentProvider === "alipay";
-        const payDisabled = state.terms ? "" : "disabled";
+        const termsError = paymentError("terms");
+        const termsInvalid = termsError ? " invalid" : "";
         if (isAlipay) {
           return `
             <section class="panel">
@@ -3491,16 +3557,17 @@
                 ${reviewBlock()}
                 <div class="purchase">
                   <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
-                  <label class="checkbox-row terms">
+                  <label class="checkbox-row terms${termsInvalid}">
                     <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
                     <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                   </label>
+                  ${paymentErrorMarkup("terms")}
                   <div class="alipay-handoff">
                     <div class="alipay-qr-panel alipay-desktop-only">
                       <p class="alipay-qr-copy">Please scan <strong>the QR code</strong> with your phone to continue</p>
                       ${qrCodeMarkup()}
                     </div>
-                    <button type="button" class="alipay-mobile-cta" data-action="pay" ${payDisabled}>
+                    <button type="button" class="alipay-mobile-cta" data-action="pay">
                       <span>Subscribe with</span>
                       <img src="${asset("Alipay.svg")}" alt="Alipay" />
                     </button>
@@ -3512,18 +3579,21 @@
             </section>
           `;
         }
+        const cardError = paymentError("card");
+        const cardInvalid = cardError ? " invalid" : "";
         const paymentFields = isAlipay
           ? ""
           : `
               <div class="card-fields-group">
-                <label class="field card-number">
+                <label class="field card-number${cardInvalid}">
                   <img class="asset-icon card-input-icon" src="${asset("credit-card.svg")}" alt="" />
                   <input id="cardInput" inputmode="numeric" placeholder="Credit or Debit Card number" value="${state.cardComplete ? "4242 4242 4242 4242" : ""}" />
                 </label>
                 <div class="field-grid">
-                  <label class="field"><input id="expiryInput" placeholder="MM/YY" value="${state.cardComplete ? "12/28" : ""}" /></label>
-                  <label class="field"><input id="cvvInput" placeholder="CVC" value="${state.cardComplete ? "123" : ""}" /></label>
+                  <label class="field${cardInvalid}"><input id="expiryInput" placeholder="MM/YY" value="${state.cardComplete ? "12/28" : ""}" /></label>
+                  <label class="field${cardInvalid}"><input id="cvvInput" placeholder="CVC" value="${state.cardComplete ? "123" : ""}" /></label>
                 </div>
+                ${paymentErrorMarkup("card")}
               </div>
             `;
         return `
@@ -3549,11 +3619,12 @@
 
               <div class="purchase">
                 <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
-                <label class="checkbox-row terms">
+                <label class="checkbox-row terms${termsInvalid}">
                   <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
-                <button type="button" class="cta" data-action="pay" ${payDisabled}>pay &amp; subscribe</button>
+                ${paymentErrorMarkup("terms")}
+                <button type="button" class="cta" data-action="pay">pay &amp; subscribe</button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
             </div>
@@ -3630,6 +3701,8 @@
       }
 
       function applePanel() {
+        const termsError = paymentError("terms");
+        const termsInvalid = termsError ? " invalid" : "";
         return `
           <section class="panel">
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
@@ -3651,11 +3724,12 @@
               </div>
               <div class="purchase">
                 <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
-                <label class="checkbox-row terms">
+                <label class="checkbox-row terms${termsInvalid}">
                   <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
-                <button type="button" class="cta apple-pay-cta" data-action="pay" ${state.appleTerms ? "" : "disabled"}>Subscribe with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" /></button>
+                ${paymentErrorMarkup("terms")}
+                <button type="button" class="cta apple-pay-cta" data-action="pay">Subscribe with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" /></button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
             </div>
@@ -3794,6 +3868,7 @@
         }
         if (["cardInput", "expiryInput", "cvvInput"].includes(event.target.id)) {
           state.cardComplete = true;
+          clearPaymentErrors("card");
           render();
         }
       });
@@ -3812,16 +3887,19 @@
       document.addEventListener("change", (event) => {
         if (event.target.id === "termsInput") {
           state.terms = event.target.checked;
+          if (state.terms) clearPaymentErrors("terms");
           render();
         }
         if (event.target.id === "appleTermsInput") {
           state.appleTerms = event.target.checked;
+          if (state.appleTerms) clearPaymentErrors("terms");
           render();
         }
         if (event.target.id === "billingSameInput") {
           state.billingSameCountry = event.target.checked;
           state.openCountryMenu = "";
           if (state.billingSameCountry) state.billingCountry = "";
+          if (state.billingSameCountry) clearPaymentErrors("billingCountry");
           render();
         }
       });
@@ -3854,8 +3932,8 @@
             if (state.screen === "socialLoading") setScreen("paymentMethod");
           }, CHECKOUT_LOADING_DELAY);
         }
-        if (action === "edit-account") setScreen("account", { email: "", password: "", passwordVisible: false, invalidEmail: false });
-        if (action === "change-payment") setScreen("paymentMethod");
+        if (action === "edit-account") setScreen("account", { email: "", password: "", passwordVisible: false, invalidEmail: false, paymentErrors: {} });
+        if (action === "change-payment") setScreen("paymentMethod", { paymentErrors: {} });
         if (action === "forgot") showAccountLoadingThen("forgot");
         if (action === "back-password") setScreen("password");
         if (action === "toggle-password") setScreen("password", { passwordVisible: !state.passwordVisible });
@@ -3868,6 +3946,8 @@
           const target = actionTarget.dataset.target;
           if (target === "residence") state.residenceCountry = actionTarget.dataset.country;
           if (target === "billing") state.billingCountry = actionTarget.dataset.country;
+          if (target === "residence") clearPaymentErrors("residenceCountry");
+          if (target === "billing") clearPaymentErrors("billingCountry");
           state.openCountryMenu = "";
           render();
         }
@@ -3896,22 +3976,27 @@
         if (action === "remove-promo") updateState({ promoOpen: false, promoCode: "", promoStatus: "", promoPlanLoading: false, promoDiscountApplied: false });
         if (action === "choose-credit") {
           state.paymentProvider = "credit";
-          setScreen("creditLoading", { terms: false, appleTerms: false });
+          setScreen("creditLoading", { terms: false, appleTerms: false, paymentErrors: {} });
           setTimeout(() => setScreen("credit"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "choose-alipay") {
           state.paymentProvider = "alipay";
-          setScreen("creditLoading", { terms: false, appleTerms: false });
+          setScreen("creditLoading", { terms: false, appleTerms: false, paymentErrors: {} });
           setTimeout(() => setScreen("credit"), CHECKOUT_LOADING_DELAY);
         }
         if (action === "choose-apple") {
           state.paymentProvider = "apple";
-          setScreen("appleLoading", { terms: false, appleTerms: false });
+          setScreen("appleLoading", { terms: false, appleTerms: false, paymentErrors: {} });
           setTimeout(() => setScreen("apple"), CHECKOUT_LOADING_DELAY);
         }
-        if (action === "saved-card") setScreen("credit", { addNewCard: false, cardComplete: false });
-        if (action === "add-card") setScreen("credit", { addNewCard: true, cardComplete: false });
+        if (action === "saved-card") setScreen("credit", { addNewCard: false, cardComplete: false, paymentErrors: {} });
+        if (action === "add-card") setScreen("credit", { addNewCard: true, cardComplete: false, paymentErrors: {} });
         if (action === "pay") {
+          const errors = validatePayment();
+          if (Object.keys(errors).length) {
+            showPaymentErrors(errors);
+            return;
+          }
           setScreen("paymentLoading");
           setTimeout(() => {
             if (state.screen === "paymentLoading") setScreen("success");
@@ -3940,6 +4025,7 @@
             promoStatus: "",
             terms: false,
             appleTerms: false,
+            paymentErrors: {},
           });
         }
       });
