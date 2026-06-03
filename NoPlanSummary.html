@@ -695,6 +695,12 @@
         gap: 24px;
       }
 
+      .card-body.short-content {
+        min-height: 360px;
+        justify-content: center;
+        padding-bottom: 16px;
+      }
+
       .payment-review-body {
         gap: 24px;
       }
@@ -1577,7 +1583,7 @@
       }
 
       .payment-intro {
-        margin: 16px 0;
+        margin: 0;
         font-size: 14px;
         text-align: center;
       }
@@ -2446,8 +2452,9 @@
         align-items: center;
         justify-content: center;
         justify-items: center;
+        min-height: 360px;
         width: 100%;
-        padding: 32px 0 42px;
+        padding: 0 0 16px;
       }
 
       .account-loading-content {
@@ -2978,7 +2985,7 @@
         return `
           <section class="panel expanded">
             ${stepHeader(1, "Account")}
-            <div class="card-body">
+            <div class="card-body short-content">
               <h2 class="card-title">We found your account</h2>
               <p class="card-subtitle">Sign in to continue with your subscription</p>
               <div class="form-width" style="gap:24px">
@@ -3268,7 +3275,7 @@
         return `
           <section class="panel expanded">
             ${stepHeader(1, "Account")}
-            <div class="card-body forgot-body">
+            <div class="card-body forgot-body short-content">
               <div class="forgot-message">
                 <img class="forgot-icon" src="${asset("mail-check.svg")}" alt="" />
                 <h2 class="forgot-title">We've emailed you a password reset</h2>
@@ -3295,8 +3302,8 @@
           </section>
           <section class="panel expanded">
             ${stepHeader(2, "Payment")}
-            <p class="payment-intro">Please choose a payment method to continue:</p>
-            <div class="card-body payment-choice-body" style="margin-top:0; gap:16px">
+            <div class="card-body payment-choice-body short-content" style="margin-top:0; gap:16px">
+              <p class="payment-intro">Please choose a payment method to continue:</p>
               <div class="method-list">
                 <button type="button" class="method-row" data-action="choose-credit">
                   <span class="cards">
