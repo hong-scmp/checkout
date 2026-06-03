@@ -1813,6 +1813,37 @@
         align-items: start;
       }
 
+      .review-placeholder {
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+        border-radius: 8px;
+        background-image:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+          linear-gradient(90deg, var(--primary-blue-50), var(--primary-blue-50));
+        padding: 16px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .review-placeholder-bar {
+        display: block;
+        height: 14px;
+        background: var(--bluegrey-100);
+        animation: placeholderPulse 1.2s ease-in-out infinite;
+      }
+
+      .review-placeholder-rows {
+        display: grid;
+        gap: 8px;
+      }
+
+      .review-placeholder-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+      }
+
       .review-label {
         color: var(--grey-700);
         font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
@@ -2272,12 +2303,6 @@
         font-size: 12px;
       }
 
-      .promo-loading {
-        margin: 0;
-        color: var(--grey-700);
-        font-size: 12px;
-      }
-
       .purchase {
         display: grid;
         gap: 16px;
@@ -2450,6 +2475,69 @@
         margin: 0 auto;
       }
 
+      .payment-skeleton-area {
+        display: grid;
+        gap: 24px;
+        width: 100%;
+        max-width: 544px;
+        margin: 0 auto;
+      }
+
+      .payment-skeleton-review {
+        display: grid;
+        gap: 16px;
+        width: 100%;
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+          var(--primary-blue-50);
+        padding: 16px;
+      }
+
+      .payment-skeleton-review-rows {
+        display: grid;
+        gap: 10px;
+      }
+
+      .payment-skeleton-review-row {
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .payment-skeleton-fields,
+      .payment-skeleton-purchase {
+        display: grid;
+        gap: 16px;
+        width: 100%;
+      }
+
+      .payment-skeleton-fields {
+        max-width: none;
+      }
+
+      .payment-skeleton-country {
+        display: grid;
+        gap: 8px;
+      }
+
+      .payment-skeleton-checkbox {
+        display: grid;
+        grid-template-columns: 16px minmax(0, 1fr);
+        gap: 8px;
+        align-items: center;
+      }
+
+      .payment-skeleton-qr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 112px;
+        gap: 24px;
+        align-items: center;
+        min-height: 132px;
+        background: #f4f4f4;
+        padding: 24px;
+      }
+
       .account-loading-panel {
         min-height: 300px;
         display: flex;
@@ -2537,6 +2625,16 @@
       @keyframes shimmer {
         to {
           background-position: -240% 0;
+        }
+      }
+
+      @keyframes placeholderPulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.65;
         }
       }
 
@@ -3232,7 +3330,34 @@
         `;
       }
 
+      function billingSummarySkeleton({ live = false } = {}) {
+        const liveAttrs = live ? ` aria-live="polite" aria-label="Updating billing summary"` : "";
+        return `
+          <div class="review-placeholder"${liveAttrs}>
+            <span class="review-placeholder-bar" style="width:100%;max-width:360px"></span>
+            <div class="review-placeholder-rows">
+              <div class="review-placeholder-row">
+                <span class="review-placeholder-bar" style="width:60px"></span>
+                <span class="review-placeholder-bar" style="width:104px"></span>
+              </div>
+              <div class="review-placeholder-row">
+                <span class="review-placeholder-bar" style="width:60px"></span>
+                <span class="review-placeholder-bar" style="width:165px"></span>
+              </div>
+              <div class="review-placeholder-row">
+                <span class="review-placeholder-bar" style="width:60px"></span>
+                <span class="review-placeholder-bar" style="width:96px"></span>
+              </div>
+            </div>
+            <span class="review-placeholder-bar" style="width:100%;max-width:480px"></span>
+          </div>
+        `;
+      }
+
       function reviewBlock() {
+        if (state.promoPlanLoading) {
+          return billingSummarySkeleton({ live: true });
+        }
         const discounted = state.promoDiscountApplied;
         const price = discounted ? "HKD480.00" : "HKD780.00";
         return `
@@ -3250,18 +3375,11 @@
 
       function promoBlock() {
         const code = state.promoCode.trim();
-        if (state.promoPlanLoading) {
-          return `
-            <div class="promo-form" aria-live="polite">
-              <p class="promo-loading">Applying promo code...</p>
-            </div>
-          `;
-        }
         if (state.promoStatus === "applied") {
           return `
             <div class="promo-form">
               <div class="promo-applied">
-                <span class="promo-applied-code"><span class="promo-tick" aria-hidden="true"></span> SCMPDISCOUNT50</span>
+                <span class="promo-applied-code"><span class="promo-tick" aria-hidden="true"></span> ${state.promoCode}</span>
                 <button type="button" class="promo-remove" data-action="remove-promo" aria-label="Remove promo code"><img class="promo-remove-icon" src="${asset("close.svg")}" alt="" /></button>
               </div>
               <p class="promo-saving">You save <strong>HKD480</strong> (50% off)</p>
@@ -3443,24 +3561,60 @@
         `;
       }
 
-      function appleSkeleton() {
+      function paymentDetailSkeleton(provider = "credit") {
+        const isCredit = provider === "credit";
+        const isAlipay = provider === "alipay";
+        const method = isAlipay ? "AlipayHK" : "";
+        const cardFields = `
+          <div class="payment-skeleton-fields">
+            <span class="skel input"></span>
+            <div class="field-grid">
+              <span class="skel input"></span>
+              <span class="skel input"></span>
+            </div>
+          </div>
+        `;
+        const countryFields = `
+          <div class="payment-skeleton-country">
+            <span class="skel line" style="width:140px"></span>
+            <span class="skel input"></span>
+            <div class="payment-skeleton-checkbox">
+              <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
+              <span class="skel long" style="height:14px"></span>
+            </div>
+          </div>
+        `;
+        const alipayFields = `
+          <div class="payment-skeleton-qr">
+            <div style="display:grid;gap:8px">
+              <span class="skel line" style="width:176px"></span>
+              <span class="skel line" style="width:132px"></span>
+            </div>
+            <span class="skel" style="width:112px;height:112px;border-radius:0"></span>
+          </div>
+          <span class="skel input" style="height:56px;border-radius:4px"></span>
+        `;
         return `
           <section class="panel">
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
           </section>
           <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
-            <div class="card-body">
-              <div class="skeleton-area">
-                <span class="skel line"></span>
-                <span class="skel input"></span>
-                <span class="skel long"></span>
-                <div class="checkbox-row">
-                  <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
-                  <span class="skel long"></span>
+            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment", method })}
+            <div class="card-body payment-review-body">
+              <div class="payment-skeleton-area" aria-hidden="true">
+                ${billingSummarySkeleton()}
+                <span class="skel line" style="width:119px"></span>
+                ${isAlipay ? alipayFields : `${isCredit ? cardFields : ""}${countryFields}`}
+                <div class="payment-skeleton-purchase">
+                  <span class="skel long" style="height:18px"></span>
+                  <span class="skel long" style="max-width:360px;height:18px"></span>
+                  <div class="payment-skeleton-checkbox">
+                    <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
+                    <span class="skel long" style="max-width:352px;height:14px"></span>
+                  </div>
+                  ${isAlipay ? "" : `<span class="skel btn" style="max-width:${isCredit ? "100%" : "360px"};justify-self:${isCredit ? "stretch" : "center"}"></span>`}
+                  <span class="skel line" style="justify-self:center;width:160px;height:13px"></span>
                 </div>
-                <span class="skel btn"></span>
-                <span class="skel line" style="justify-self:center;width:216px;height:13px"></span>
               </div>
             </div>
           </section>
@@ -3468,42 +3622,11 @@
       }
 
       function creditSkeleton() {
-        return `
-          <section class="panel">
-            ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
-          </section>
-          <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
-            <div class="card-body">
-              <div class="skeleton-area">
-                <div>
-                  <span class="skel line" style="width:131px;margin-bottom:12px"></span>
-                  <span class="skel input"></span>
-                </div>
-                <div>
-                  <span class="skel line" style="width:220px;margin-bottom:8px"></span>
-                  <span class="skel input"></span>
-                  <div class="field-grid" style="margin-top:8px">
-                    <span class="skel input"></span>
-                    <span class="skel input"></span>
-                  </div>
-                </div>
-                <div>
-                  <span class="skel long" style="height:2px;margin-bottom:16px"></span>
-                  <span class="skel line" style="width:128px;margin-bottom:16px"></span>
-                  <span class="skel long" style="height:1px"></span>
-                </div>
-                <span class="skel long"></span>
-                <div class="checkbox-row">
-                  <span class="skel" style="width:16px;height:16px;border-radius:4px"></span>
-                  <span class="skel long"></span>
-                </div>
-                <span class="skel btn"></span>
-                <span class="skel line" style="justify-self:center;width:216px;height:13px"></span>
-              </div>
-            </div>
-          </section>
-        `;
+        return paymentDetailSkeleton(state.paymentProvider || "credit");
+      }
+
+      function appleSkeleton() {
+        return paymentDetailSkeleton("apple");
       }
 
       function applePanel() {
@@ -3751,7 +3874,8 @@
         if (action === "show-promo") updateState({ promoOpen: true, promoStatus: "" });
         if (action === "apply-promo") {
           const code = state.promoCode.trim().toUpperCase();
-          if (code === "SCMPDISCOUNT50") {
+          const validPromoCodes = new Set(["SCMPDISCOUNT50", "SALE50", "SCMP50"]);
+          if (validPromoCodes.has(code)) {
             updateState({
               promoCode: code,
               promoStatus: "applied",
