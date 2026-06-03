@@ -767,6 +767,11 @@
         padding: 12px 16px;
         font-size: 14px;
         line-height: 1.2;
+        transition: background-color 0.16s ease, border-color 0.16s ease;
+      }
+
+      .social:hover {
+        background: #f4f4f4;
       }
 
       .social-row {
@@ -886,6 +891,11 @@
         padding: 12px 24px;
         font-size: 16px;
         cursor: pointer;
+        transition: background-color 0.16s ease;
+      }
+
+      .social-auth-primary:hover {
+        background: #788ac4;
       }
 
       .social-auth-secondary {
@@ -1088,6 +1098,11 @@
         color: var(--white);
         font-size: 17px;
         cursor: pointer;
+        transition: background-color 0.16s ease;
+      }
+
+      .social-apple-primary:hover {
+        background: #333;
       }
 
       .social-apple-footer {
@@ -1193,6 +1208,11 @@
         color: var(--white);
         font-size: 20px;
         cursor: pointer;
+        transition: background-color 0.16s ease;
+      }
+
+      .social-facebook-primary:hover {
+        background: #788ac4;
       }
 
       .social-facebook-secondary {
@@ -1206,6 +1226,11 @@
         font-size: 18px;
         font-weight: 600;
         cursor: pointer;
+        transition: background-color 0.16s ease;
+      }
+
+      .social-facebook-secondary:hover {
+        background: #f4f4f4;
       }
 
       .social-facebook-create {
@@ -1219,6 +1244,11 @@
         font-size: 18px;
         font-weight: 600;
         cursor: pointer;
+        transition: background-color 0.16s ease;
+      }
+
+      .social-facebook-create:hover {
+        background: #f4f8ff;
       }
 
       .social-facebook-meta {
@@ -1495,6 +1525,11 @@
         line-height: 1.2;
         font-weight: 700;
         padding: 12px 16px;
+        transition: background-color 0.16s ease;
+      }
+
+      .cta:not(:disabled):not(.disabled):hover {
+        background: #788ac4;
       }
 
       .cta:disabled,
@@ -1515,6 +1550,10 @@
 
       .apple-pay-cta:not(:disabled) {
         background: var(--black);
+      }
+
+      .apple-pay-cta:not(:disabled):hover {
+        background: #333;
       }
 
       .apple-pay-cta .payment-logo.applepay {
@@ -1566,6 +1605,11 @@
         border-bottom: 1px solid var(--grey-250);
         background: var(--white);
         padding: 0 16px 0 24px;
+        transition: background-color 0.16s ease;
+      }
+
+      .method-row:hover {
+        background: #f4f4f4;
       }
 
       .method-row:last-child {
@@ -1861,6 +1905,11 @@
         font-size: 16px;
         line-height: 1.2;
         cursor: pointer;
+        transition: background-color 0.16s ease;
+      }
+
+      .alipay-mobile-cta:not(:disabled):hover {
+        background: #333;
       }
 
       .alipay-mobile-cta:disabled {
@@ -2130,10 +2179,15 @@
         font-weight: 700;
         line-height: 1.2;
         text-transform: uppercase;
+        transition: background-color 0.16s ease;
       }
 
       .promo-apply:disabled {
         background: var(--grey-400);
+      }
+
+      .promo-apply:not(:disabled):hover {
+        background: #788ac4;
       }
 
       .promo-error {
@@ -2183,6 +2237,11 @@
         border: 0;
         border-radius: 50%;
         background: var(--white);
+        transition: background-color 0.16s ease;
+      }
+
+      .promo-remove:hover {
+        background: #f4f4f4;
       }
 
       .promo-remove-icon {
