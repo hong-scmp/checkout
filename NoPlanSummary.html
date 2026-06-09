@@ -1780,17 +1780,17 @@
         max-width: 544px;
         margin: 0 auto;
         border-radius: 8px;
-        background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-          var(--primary-blue-50);
-        padding: 16px;
+        background: transparent;
+        padding: 8px 0 0;
         color: var(--black);
         font-size: 14px;
         line-height: 1.4;
+        display: grid;
+        gap: 16px;
       }
 
       .review-charge {
-        margin: 0 0 16px;
+        margin: 0;
       }
 
       .review-charge s {
@@ -1813,15 +1813,19 @@
         align-items: start;
       }
 
+      .review-separator,
+      .purchase-divider {
+        width: 100%;
+        border-top: 1px dashed var(--grey-200);
+      }
+
       .review-placeholder {
         width: 100%;
         max-width: 544px;
         margin: 0 auto;
         border-radius: 8px;
-        background-image:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-          linear-gradient(90deg, var(--primary-blue-50), var(--primary-blue-50));
-        padding: 16px;
+        background: transparent;
+        padding: 8px 0 0;
         display: grid;
         gap: 16px;
       }
@@ -1850,7 +1854,11 @@
       }
 
       .review-note {
-        margin: 16px 0 0;
+        margin: 0;
+      }
+
+      .review-separator + .review-note {
+        margin-top: -8px;
       }
 
       .review-note em {
@@ -2323,6 +2331,7 @@
         width: 100%;
         max-width: 544px;
         margin: 0 auto;
+        justify-items: center;
       }
 
       .purchase .cta {
@@ -2337,8 +2346,12 @@
 
       .renewal {
         margin: 0;
-        font-size: 14px;
-        line-height: 20px;
+        width: 100%;
+        max-width: 360px;
+        color: var(--grey-700);
+        font-size: 12px;
+        line-height: 1.4;
+        text-align: center;
       }
 
       .renewal strong {
@@ -2681,7 +2694,7 @@
 
         .shell {
           width: 100%;
-          padding: 0 16px;
+          padding: 0 8px;
         }
 
         .checkout.with-deal .shell {
@@ -3427,9 +3440,11 @@
             <div class="review-rows">
               <div class="review-row"><span class="review-label">Starting</span><span>Today</span></div>
               <div class="review-row"><span class="review-label">Duration</span><span>1 year of access</span></div>
-              <div class="review-row"><span class="review-label">Price</span><span>${price}</span></div>
+              <div class="review-row"><span class="review-label">Billing</span><span>${price}</span></div>
             </div>
+            <div class="review-separator" aria-hidden="true"></div>
             <p class="review-note">You will be billed HKD960.00 starting on 2 Jun 2027.</p>
+            <div class="review-separator" aria-hidden="true"></div>
           </div>
         `;
       }
@@ -3552,12 +3567,13 @@
               <div class="card-body">
                 ${reviewBlock()}
                 <div class="purchase">
-                  <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
+                  <div class="purchase-divider" aria-hidden="true"></div>
                   <label class="checkbox-row terms${termsInvalid}">
                     <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
                     <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                   </label>
                   ${paymentErrorMarkup("terms")}
+                  <p class="renewal">You can cancel your renewal anytime from your account settings. We'll send you an email reminder 30 days before each renewal.</p>
                   <div class="alipay-handoff">
                     <div class="alipay-qr-panel alipay-desktop-only">
                       <p class="alipay-qr-copy">Please scan <strong>the QR code</strong> with your phone to continue</p>
@@ -3605,21 +3621,17 @@
                 ${paymentFields}
                 <div>
                   ${countrySelect("residence", "Country of residence", state.residenceCountry, "Select a country or region")}
-                  <label class="checkbox-row" style="margin-top:8px">
-                    <input id="billingSameInput" type="checkbox" ${state.billingSameCountry ? "checked" : ""} />
-                    <span>My billing address is in the same country</span>
-                  </label>
-                  ${state.billingSameCountry ? "" : `<div class="billing-country-field">${countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}</div>`}
                 </div>
               </div>
 
               <div class="purchase">
-                <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
+                <div class="purchase-divider" aria-hidden="true"></div>
                 <label class="checkbox-row terms${termsInvalid}">
                   <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
                 ${paymentErrorMarkup("terms")}
+                <p class="renewal">You can cancel your renewal anytime from your account settings. We'll send you an email reminder 30 days before each renewal.</p>
                 <button type="button" class="cta" data-action="pay">pay &amp; subscribe</button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
@@ -3712,19 +3724,15 @@
                 <div>
                   ${countrySelect("residence", "Country of residence", state.residenceCountry, "Select a country or region")}
                 </div>
-                <label class="checkbox-row">
-                  <input id="billingSameInput" type="checkbox" ${state.billingSameCountry ? "checked" : ""} />
-                  <span>My billing address is in the same country</span>
-                </label>
-                ${state.billingSameCountry ? "" : `<div class="billing-country-field">${countrySelect("billing", "Select your billing country", state.billingCountry, "Select a country or region")}</div>`}
               </div>
               <div class="purchase">
-                <p class="renewal">You can cancel your renewal anytime from your account settings. <span class="teal">We'll send you an email reminder before each renewal.</span></p>
+                <div class="purchase-divider" aria-hidden="true"></div>
                 <label class="checkbox-row terms${termsInvalid}">
                   <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
                   <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
                 </label>
                 ${paymentErrorMarkup("terms")}
+                <p class="renewal">You can cancel your renewal anytime from your account settings. We'll send you an email reminder 30 days before each renewal.</p>
                 <button type="button" class="cta apple-pay-cta" data-action="pay">Subscribe with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" /></button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
               </div>
