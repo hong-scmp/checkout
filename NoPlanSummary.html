@@ -3585,7 +3585,7 @@
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
           </section>
           <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
+            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment", method: "Credit/ debit card" })}
             <div class="card-body payment-review-body">
               ${reviewBlock()}
               ${promoBlock()}
@@ -3615,7 +3615,7 @@
       function paymentDetailSkeleton(provider = "credit") {
         const isCredit = provider === "credit";
         const isAlipay = provider === "alipay";
-        const method = isAlipay ? "AlipayHK" : "";
+        const method = isAlipay ? "AlipayHK" : provider === "apple" ? "Apple Pay" : "Credit/ debit card";
         const cardFields = `
           <div class="payment-skeleton-fields">
             <span class="skel input"></span>
@@ -3688,7 +3688,7 @@
             ${stepHeader(1, "Account", { done: true, email: true, change: "Change" })}
           </section>
           <section class="panel expanded">
-            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment" })}
+            ${stepHeader(2, "Payment", { change: "Change", action: "change-payment", method: "Apple Pay" })}
             <div class="card-body">
               ${reviewBlock()}
               ${promoBlock()}
