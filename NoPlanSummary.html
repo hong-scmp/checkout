@@ -56,11 +56,6 @@
         align-items: center;
       }
 
-      .checkout.with-deal {
-        background-image:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-          linear-gradient(90deg, rgb(120, 138, 196), rgb(120, 138, 196));
-      }
 
       .checkout.auth-mode {
         background: var(--white);
@@ -82,7 +77,7 @@
         width: 100%;
         height: 56px;
         padding: 0 40px;
-        background: var(--white);
+        background: transparent;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -139,35 +134,43 @@
         white-space: nowrap;
       }
 
-      .deal {
-        width: 100%;
-        min-height: 40px;
-        margin: 0;
-        background: var(--secondary-blue-100);
-        color: var(--action-blue);
+      .plan-widget {
+        width: min(100%, 640px);
+        margin: 0 auto 0;
         display: flex;
+        gap: 24px;
         align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 8px;
-        border-radius: 0;
-        font-size: 14px;
-        line-height: 1.25;
+        padding: 16px;
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+          linear-gradient(90deg, rgb(120, 138, 196), rgb(120, 138, 196));
       }
 
-      .deal strong {
+      .plan-widget-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .plan-widget-title {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.25;
+        color: var(--black);
+      }
+
+      .plan-widget-title strong {
         font-weight: 700;
       }
 
-      .deal span {
-        font-weight: 400;
-      }
-
-      .deal-icon {
-        width: 24px;
-        height: 24px;
-        display: block;
-        flex: none;
+      .plan-widget-desc {
+        margin: 0;
+        font-size: 13px;
+        line-height: 18px;
+        color: #4e535d;
       }
 
       .shell {
@@ -216,8 +219,8 @@
         flex: none;
       }
 
-      .checkout.with-deal .shell {
-        padding-top: 24px;
+      .checkout .shell {
+        padding-top: 8px;
       }
 
       .checkout-heading {
@@ -2697,27 +2700,9 @@
           padding: 0 8px;
         }
 
-        .checkout.with-deal .shell {
-          padding-top: 16px;
-        }
-
-        .deal {
-          justify-content: flex-start;
-          gap: 12px;
-          padding: 16px;
-          font-size: 14px;
-          line-height: 1.25;
-          text-align: left;
-        }
-
-        .deal span {
-          flex: 1;
-          min-width: 0;
-          max-width: 100%;
-        }
-
-        .deal-icon {
-          margin-top: 0;
+        .plan-widget {
+          width: calc(100% - 16px);
+          border-radius: 8px;
         }
 
         .plan,
@@ -2786,10 +2771,6 @@
 
         .badge {
           font-size: 11px;
-        }
-
-        .deal {
-          justify-content: center;
         }
 
         .social-auth-page.google {
@@ -2868,13 +2849,15 @@
     <main class="checkout" id="checkout">
       <header class="header" id="pageHeader"></header>
 
-      <div class="deal hidden" id="deal">
-        <img class="deal-icon" src="assets/subscription-checkout/check-circle-2.svg" alt="" />
-        <span>You're subscribing to <strong>Standard: Annual</strong> - just two more steps to go.</span>
+      <div class="plan-widget hidden" id="planWidget">
+        <div class="plan-widget-info">
+          <p class="plan-widget-title">You have chosen <strong>Standard: Annual</strong></p>
+          <p class="plan-widget-desc">Get unlimited access on web and app, archived articles, and listening to articles.</p>
+        </div>
+        <button type="button" class="link-button" data-action="change-plan">Change</button>
       </div>
 
       <section class="shell" id="shell">
-        <div class="checkout-heading" id="checkoutHeading"></div>
         <section class="flow" id="flow" aria-live="polite"></section>
       </section>
 
@@ -2919,7 +2902,7 @@
       const flow = document.querySelector("#flow");
       const checkout = document.querySelector("#checkout");
       const pageHeader = document.querySelector("#pageHeader");
-      const deal = document.querySelector("#deal");
+      const planWidget = document.querySelector("#planWidget");
       const shell = document.querySelector("#shell");
       const checkoutFooter = document.querySelector("#checkoutFooter");
       const assetPath = "assets/subscription-checkout/";
@@ -3013,7 +2996,7 @@
         checkoutFooter.classList.remove("hidden");
         checkoutFooter.classList.remove("is-fixed");
         const footerHeight = checkoutFooter.getBoundingClientRect().height || 60;
-        const visibleChrome = [pageHeader, deal, shell].filter((node) => {
+        const visibleChrome = [pageHeader, planWidget, shell].filter((node) => {
           return node && getComputedStyle(node).display !== "none";
         });
         const contentBottom = visibleChrome.reduce((bottom, node) => {
@@ -3025,14 +3008,6 @@
 
       function scheduleFooterVisibility() {
         requestAnimationFrame(updateFooterVisibility);
-      }
-
-      function updateDealMessage(isPaymentStep) {
-        const stepsCopy = isPaymentStep ? "one more step" : "two more steps";
-        deal.innerHTML = `
-          <img class="deal-icon" src="${asset("check-circle-2.svg")}" alt="" />
-          <span>You're subscribing to <strong>Standard: Annual</strong> - just ${stepsCopy} to go.</span>
-        `;
       }
 
       function headerMarkup() {
@@ -3062,10 +3037,7 @@
       }
 
       function standardShellMarkup() {
-        return `
-          ${checkoutHeadingMarkup()}
-          <section class="flow" id="flow" aria-live="polite"></section>
-        `;
+        return `<section class="flow" id="flow" aria-live="polite"></section>`;
       }
 
       function stepHeader(number, title, options = {}) {
@@ -3781,10 +3753,8 @@
         const dealScreens = ["account", "password", "linkedGoogle", "accountLoading", "forgot", "paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
         const paymentStepScreens = ["paymentMethod", "creditLoading", "credit", "apple", "appleLoading"];
         pageHeader.innerHTML = headerMarkup();
-        updateDealMessage(paymentStepScreens.includes(state.screen));
         checkout.classList.toggle("auth-mode", authMode);
-        checkout.classList.toggle("with-deal", !authMode && dealScreens.includes(state.screen));
-        deal.classList.toggle("hidden", authMode || !dealScreens.includes(state.screen));
+        planWidget.classList.toggle("hidden", authMode || !dealScreens.includes(state.screen));
 
         if (state.screen === "socialAuth") {
           shell.innerHTML = socialAuthPanel();
@@ -3816,10 +3786,8 @@
           return;
         }
 
-        if (!document.querySelector("#flow") || !document.querySelector("#checkoutHeading")) {
+        if (!document.querySelector("#flow")) {
           shell.innerHTML = standardShellMarkup();
-        } else {
-          document.querySelector("#checkoutHeading").outerHTML = checkoutHeadingMarkup();
         }
 
         const target = document.querySelector("#flow");
