@@ -3973,7 +3973,7 @@
             if (state.screen === "socialLoading") setScreen("paymentMethod");
           }, CHECKOUT_LOADING_DELAY);
         }
-        if (action === "change-plan") window.location.href = "https://hong-scmp.github.io/checkout/SubscriptionNoPlanSummary.html";
+        if (action === "change-plan") window.location.href = "SubscriptionNoPlanSummary.html";
         if (action === "edit-account") setScreen("account", { email: "", password: "", passwordVisible: false, invalidEmail: false, paymentErrors: {} });
         if (action === "change-payment") setScreen("paymentMethod", { paymentErrors: {} });
         if (action === "forgot") showAccountLoadingThen("forgot");
