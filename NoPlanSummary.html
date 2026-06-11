@@ -2232,10 +2232,15 @@
         margin-top: 4px;
       }
 
-      .purchase .payment-error {
-        margin-top: -12px;
-        text-align: left;
-        width: 100%;
+      .terms-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .terms-wrap .payment-error {
+        margin-top: 0;
       }
 
       .promo {
@@ -3592,11 +3597,13 @@
                 ${reviewBlock()}
                 <div class="purchase">
                   <div class="purchase-divider" aria-hidden="true"></div>
-                  <label class="checkbox-row terms${termsInvalid}">
-                    <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
-                    <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
-                  </label>
-                  ${paymentErrorMarkup("terms")}
+                  <div class="terms-wrap">
+                    <label class="checkbox-row terms${termsInvalid}">
+                      <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
+                      <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
+                    </label>
+                    ${paymentErrorMarkup("terms")}
+                  </div>
                   <p class="renewal">You can cancel your renewal anytime from your account settings. We'll send you an email reminder 30 days before each renewal.</p>
                   <div class="alipay-handoff">
                     <div class="alipay-qr-panel alipay-desktop-only">
@@ -3650,11 +3657,13 @@
 
               <div class="purchase">
                 <div class="purchase-divider" aria-hidden="true"></div>
-                <label class="checkbox-row terms${termsInvalid}">
-                  <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
-                  <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
-                </label>
-                ${paymentErrorMarkup("terms")}
+                <div class="terms-wrap">
+                  <label class="checkbox-row terms${termsInvalid}">
+                    <input id="termsInput" type="checkbox" ${state.terms ? "checked" : ""} />
+                    <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
+                  </label>
+                  ${paymentErrorMarkup("terms")}
+                </div>
                 <p class="renewal">You can cancel your renewal anytime from your account settings. We'll send you an email reminder 30 days before each renewal.</p>
                 <button type="button" class="cta" data-action="pay">pay &amp; subscribe</button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
@@ -3751,11 +3760,13 @@
               </div>
               <div class="purchase">
                 <div class="purchase-divider" aria-hidden="true"></div>
-                <label class="checkbox-row terms${termsInvalid}">
-                  <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
-                  <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
-                </label>
-                ${paymentErrorMarkup("terms")}
+                <div class="terms-wrap">
+                  <label class="checkbox-row terms${termsInvalid}">
+                    <input id="appleTermsInput" type="checkbox" ${state.appleTerms ? "checked" : ""} />
+                    <span>By subscribing, you agree to our <a href="#">terms and conditions</a></span>
+                  </label>
+                  ${paymentErrorMarkup("terms")}
+                </div>
                 <p class="renewal">You can cancel your renewal anytime from your account settings. We'll send you an email reminder 30 days before each renewal.</p>
                 <button type="button" class="cta apple-pay-cta" data-action="pay">Subscribe with <img class="payment-logo applepay" src="${asset("ApplePay.svg")}" alt="Apple Pay" /></button>
                 <div class="secure"><img class="asset-icon" src="${asset("lock-keyhole.svg")}" alt="" /> Secure transaction</div>
