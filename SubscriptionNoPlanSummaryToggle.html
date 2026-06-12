@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SCMP Subscription Page Prototype - Plan Toggle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&amp;family=Roboto+Condensed:wght@400;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --action-blue: #2c4692;
+        --secondary-blue: #4585ff;
+        --secondary-blue-50: #ecf3ff;
+        --secondary-blue-100: #dae7ff;
+        --light-action-blue: #788ac4;
+        --navy: #001246;
+        --bluegrey-800: #222834;
+        --plus-bg: #d3dff2;
+        --white: #fff;
+        --black: #000;
+        --grey-700: #616161;
+        --grey-600: #717171;
+        --grey-500: #888;
+        --grey-200: #d9d9d9;
+        --marigold: #ffca05;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--black);
+        font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+        background:
+          linear-gradient(180deg, rgba(44, 70, 146, 0) 0%, rgba(44, 70, 146, 0.1) 100%),
+          var(--white);
+      }
+
+      button,
+      a {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .header {
+        width: 100%;
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 24px 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        width: 240px;
+        height: 26px;
+        display: block;
+        object-fit: contain;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        color: var(--navy);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 32px;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .nav-links span {
+        opacity: 0.5;
+      }
+
+      .nav-links span:first-child {
+        color: var(--action-blue);
+        font-weight: 700;
+        opacity: 1;
+      }
+
+      .sign-in {
+        border: 1px solid var(--action-blue);
+        border-radius: 2px;
+        background: transparent;
+        color: var(--action-blue);
+        padding: 4px 8px;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1;
+        text-transform: uppercase;
+        text-decoration: none;
+      }
+
+      .mobile-menu {
+        display: none;
+        width: 24px;
+        height: 24px;
+        border: 0;
+        background: transparent;
+        padding: 3px;
+      }
+
+      .mobile-menu span,
+      .mobile-menu::before,
+      .mobile-menu::after {
+        content: "";
+        display: block;
+        height: 2px;
+        margin: 4px 0;
+        border-radius: 2px;
+        background: var(--black);
+      }
+
+      .hero {
+        width: min(100% - 32px, 864px);
+        margin: 40px auto;
+        display: grid;
+        grid-template-columns: 484px 332px;
+        gap: 48px;
+        align-items: start;
+      }
+
+      .copy {
+        width: 484px;
+        display: grid;
+        gap: 16px;
+        padding-top: 40px;
+      }
+
+      .kicker {
+        margin: 0;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 20px;
+        line-height: 1.25;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 48px;
+        font-weight: 400;
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      .description {
+        margin: 0;
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 18px;
+        line-height: 1.4;
+        max-width: 640px;
+      }
+
+      /* ── Toggle plan card ── */
+      .plan-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .plan-toggle-group {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+      }
+
+      /* Tab bar */
+      .tab-bar {
+        display: inline-flex;
+        padding: 2px;
+        border-radius: 88px;
+        background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3)),
+                    linear-gradient(90deg, var(--light-action-blue), var(--light-action-blue));
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .tab-bar button {
+        border: 0;
+        background: transparent;
+        padding: 6px 16px;
+        border-radius: 64px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--white);
+        line-height: 1.2;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      }
+
+      .tab-bar button.active {
+        background: var(--white);
+        color: var(--action-blue);
+        box-shadow: 0 1px 2px rgba(44, 70, 146, 0.9);
+      }
+
+      .save-badge {
+        position: absolute;
+        top: -12px;
+        right: 14px;
+        background: var(--action-blue);
+        color: var(--white);
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.2;
+        padding: 1px 3px;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+
+      /* Outer wrapper (blue shell) */
+      .plan-shell-new {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding-top: 8px;
+        border-radius: 24px;
+        background: var(--light-action-blue);
+        box-shadow: 0 4px 6px rgba(44, 70, 146, 0.3);
+      }
+
+      .ribbon-new {
+        margin: 0;
+        color: var(--white);
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.3;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      /* Inner white card */
+      .plan-card-new {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        width: 332px;
+        padding: 20px;
+        border-radius: 24px;
+        border: 5px solid var(--light-action-blue);
+        background: var(--white);
+        overflow: hidden;
+      }
+
+      .plan-card-new .plan-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .plan-eyebrow-new {
+        margin: 0;
+        color: var(--grey-600);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        line-height: 1.3;
+        text-transform: uppercase;
+      }
+
+      .best-value-tag {
+        background: var(--marigold);
+        color: var(--black);
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.3;
+        text-transform: uppercase;
+        padding: 2px 4px;
+        border-radius: 4px;
+      }
+
+      .plan-name-new {
+        margin: 4px 0 0;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.3;
+        width: 100%;
+        text-align: left;
+      }
+
+      .price-row-new {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        width: 100%;
+      }
+
+      .price-new {
+        font-family: Merriweather, Georgia, serif;
+        font-size: 48px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .price-meta-new {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .price-meta-new s {
+        color: var(--grey-500);
+        font-size: 22px;
+        line-height: 1.3;
+        margin-bottom: -3px;
+      }
+
+      .price-meta-new .unit {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.3;
+      }
+
+      .price-meta-new .unit span {
+        font-weight: 400;
+      }
+
+      .billing-note {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.3;
+        color: var(--grey-700);
+        width: 100%;
+      }
+
+      .billing-note strong {
+        font-weight: 700;
+      }
+
+      /* Benefits */
+      .benefits-new {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        opacity: 0.7;
+      }
+
+      .benefits-new li {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        gap: 8px;
+        font-size: 14px;
+        line-height: 1.2;
+        color: var(--black);
+      }
+
+      .benefits-new li::before {
+        content: "";
+        width: 12px;
+        height: 7px;
+        border-left: 2px solid var(--light-action-blue);
+        border-bottom: 2px solid var(--light-action-blue);
+        transform: rotate(-45deg);
+        margin-top: 3px;
+        flex-shrink: 0;
+      }
+
+      .subscribe-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 284px;
+        min-height: 43px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--action-blue);
+        color: var(--white);
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.16s ease;
+      }
+
+      .subscribe-cta:hover,
+      .subscribe-cta:focus-visible {
+        background: var(--light-action-blue);
+      }
+
+      .cancel-note {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.3;
+        color: #666;
+        text-align: center;
+        width: 100%;
+      }
+
+      .plan-desc {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.4;
+        color: rgba(0,0,0,0.6);
+        text-align: center;
+        max-width: 332px;
+      }
+
+      /* Payment logos */
+      .payment-logos {
+        width: 285px;
+        height: 28px;
+        display: block;
+      }
+
+      .payment-logos img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* ── Plus section ── */
+      .plus {
+        width: min(calc(100% - 160px), 1280px);
+        margin: 0 auto 24px;
+        border: 1px solid rgba(69, 133, 255, 0.2);
+        border-radius: 40px;
+        background: var(--plus-bg);
+        padding: 56px 80px 0;
+        text-align: center;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .plus h2,
+      .standard-more h2 {
+        margin: 0 0 8px;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 32px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      .plus-copy {
+        max-width: 720px;
+        margin: 0 auto;
+        color: var(--bluegrey-800);
+        font-size: 16px;
+        line-height: 1.4;
+      }
+
+      .plus-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 320px));
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .plus-card {
+        border: 1px solid var(--light-action-blue);
+        border-radius: 8px;
+        background: var(--white);
+        padding: 12px 16px;
+        display: grid;
+        gap: 4px;
+        text-align: left;
+      }
+
+      .plus-card header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .plus-card small {
+        border: 1px solid var(--secondary-blue-100);
+        border-radius: 2px;
+        background: var(--secondary-blue-50);
+        color: var(--secondary-blue);
+        padding: 1px 4px;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .plus-price {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .plus-price > strong {
+        font-family: Merriweather, Georgia, serif;
+        font-size: 32px;
+        line-height: 1.3;
+      }
+
+      .plus-price span strong {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.3;
+      }
+
+      .plus-price s {
+        color: var(--grey-500);
+        font-size: 14px;
+      }
+
+      .small-cta {
+        margin-left: auto;
+        border-radius: 4px;
+        background: var(--light-action-blue);
+        color: var(--white);
+        padding: 6px 8px;
+        font-family: "Roboto Condensed", Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .plus-link {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .plus-link a {
+        color: var(--action-blue);
+        font-weight: 700;
+      }
+
+      .plus-visual {
+        width: min(100%, 800px);
+        height: 320px;
+        max-height: 320px;
+        margin: 0 auto;
+      }
+
+      .plus-visual img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      /* ── Standard more ── */
+      .standard-more {
+        background: var(--bluegrey-800);
+        color: var(--white);
+        width: 100%;
+        padding: 80px 0 0;
+      }
+
+      .standard-inner {
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 80px;
+        justify-items: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .standard-more .standard-title {
+        width: min(calc(100% - 80px), 725px);
+        margin: 0;
+        font-size: 40px;
+        line-height: 1.25;
+      }
+
+      .feature-grid {
+        width: min(calc(100% - 80px), 1160px);
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        gap: 16px;
+      }
+
+      .feature {
+        flex: 1 1 0;
+        min-width: 294px;
+        max-width: 360px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        justify-items: center;
+        align-items: center;
+        align-content: start;
+        overflow: hidden;
+      }
+
+      .feature-visual {
+        width: 360px;
+        height: 240px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      .feature-visual img {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+      }
+
+      .feature h3 {
+        margin: 0 24px;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 22px;
+        font-weight: 400;
+        line-height: 1.1;
+      }
+
+      .feature p {
+        margin: 16px 24px 0;
+        color: var(--grey-200);
+        font-size: 16px;
+        line-height: 1.4;
+      }
+
+      .feature-divider {
+        width: 1px;
+        align-self: stretch;
+        background: rgba(120, 138, 196, 0.6);
+      }
+
+      .faq {
+        width: min(calc(100% - 80px), 768px);
+        display: flex;
+        flex-direction: column;
+        gap: 56px;
+        align-items: center;
+      }
+
+      .faq h2 {
+        font-size: 40px;
+        line-height: 1.25;
+        white-space: nowrap;
+      }
+
+      .faq-list {
+        width: 100%;
+        display: grid;
+        gap: 16px;
+      }
+
+      .faq-item {
+        width: 100%;
+        border: 1px solid rgba(120, 138, 196, 0.5);
+        border-radius: 10px;
+        background: rgba(120, 138, 196, 0.2);
+        color: var(--grey-200);
+        padding: 24px;
+        text-align: left;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 18px;
+        line-height: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .faq-item::after {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border-right: 1.5px solid var(--grey-200);
+        border-bottom: 1.5px solid var(--grey-200);
+        transform: rotate(45deg);
+        flex: 0 0 auto;
+        margin-top: -4px;
+      }
+
+      .corporate-wrap {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 0 80px;
+      }
+
+      .corporate-link {
+        width: min(100%, 768px);
+        min-height: 72px;
+        border-radius: 16px 16px 0 0;
+        background: #383e48;
+        color: var(--white);
+        padding: 24px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 18px;
+        line-height: 1.5;
+        text-align: left;
+        text-decoration: none;
+      }
+
+      .corporate-link img {
+        width: 37px;
+        height: auto;
+        display: block;
+        flex: 0 0 auto;
+      }
+
+      .footer {
+        width: 100%;
+        background: var(--black);
+        color: var(--white);
+        padding: 25px 80px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .footer-inner {
+        width: min(100%, 960px);
+        min-height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 48px;
+      }
+
+      .footer-brand {
+        display: grid;
+        gap: 24px;
+      }
+
+      .footer img {
+        width: 226px;
+        height: auto;
+        display: block;
+      }
+
+      .footer-links {
+        width: 416px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 32px;
+        justify-items: end;
+      }
+
+      .footer-links span {
+        font-size: 18px;
+        line-height: 28px;
+        white-space: nowrap;
+      }
+
+      .footer-links span:nth-child(n + 3) {
+        font-size: 13px;
+      }
+
+      .footer small {
+        font-size: 13px;
+        line-height: 28px;
+      }
+
+      @media (max-width: 920px) {
+        .hero {
+          grid-template-columns: 1fr;
+          justify-items: center;
+          text-align: center;
+        }
+
+        .copy {
+          width: min(100%, 484px);
+          padding-top: 0;
+        }
+
+        .feature-grid {
+          width: min(calc(100% - 48px), 360px);
+          flex-direction: column;
+          gap: 32px;
+        }
+
+        .feature-divider {
+          display: none;
+        }
+
+        .footer-inner {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 28px;
+        }
+
+        .footer-links {
+          justify-items: start;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .header {
+          padding: 16px;
+        }
+
+        .logo {
+          width: 205px;
+          height: 22px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .nav {
+          gap: 15px;
+        }
+
+        .mobile-menu {
+          display: block;
+        }
+
+        .hero {
+          width: 100%;
+          margin: 32px auto 40px;
+          padding: 0 16px;
+          gap: 24px;
+          justify-items: center;
+          text-align: center;
+        }
+
+        .copy {
+          width: 100%;
+        }
+
+        .kicker {
+          font-size: 18px;
+        }
+
+        h1 {
+          font-size: 28px;
+        }
+
+        .description {
+          font-size: 16px;
+        }
+
+        .plan-card-new {
+          width: min(100%, 332px);
+        }
+
+        .subscribe-cta {
+          width: 100%;
+        }
+
+        .plus {
+          width: calc(100% - 32px);
+          border-radius: 24px;
+          padding: 40px 16px 0;
+        }
+
+        .plus h2,
+        .standard-more h2 {
+          font-size: 28px;
+          line-height: 1.25;
+        }
+
+        .plus-options {
+          grid-template-columns: 1fr;
+        }
+
+        .plus-visual {
+          height: auto;
+          max-height: none;
+        }
+
+        .standard-more {
+          padding-top: 64px;
+        }
+
+        .standard-inner {
+          gap: 64px;
+        }
+
+        .standard-title,
+        .faq {
+          width: calc(100% - 48px);
+        }
+
+        .standard-more h2 {
+          font-size: 32px;
+          line-height: 1.25;
+        }
+
+        .feature-visual {
+          width: 320px;
+          height: 240px;
+        }
+
+        .feature h3 {
+          font-size: 22px;
+        }
+
+        .faq {
+          gap: 40px;
+        }
+
+        .faq h2 {
+          white-space: normal;
+        }
+
+        .faq-item {
+          padding: 16px 20px;
+          font-size: 16px;
+          line-height: 24px;
+        }
+
+        .corporate-wrap {
+          padding: 0 24px;
+        }
+
+        .corporate-link {
+          padding: 20px 24px;
+        }
+
+        .footer {
+          padding: 25px 24px;
+        }
+
+        .footer-links {
+          width: 100%;
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <img class="logo" src="assets/subscription-checkout/SouthChinaMorningPost-logo.svg" alt="South China Morning Post" />
+        <nav class="nav" aria-label="Subscription sections">
+          <div class="nav-links">
+            <span>Overview</span>
+            <span>SCMP Plus</span>
+            <span>Bundle Plus</span>
+            <span>Corporate</span>
+          </div>
+          <a class="sign-in" href="NoPlanSummary.html">Sign in</a>
+          <button class="mobile-menu" type="button" aria-label="Open menu"><span></span></button>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="copy">
+          <p class="kicker">Trust. Balance. Intelligence.</p>
+          <h1>The critical news coverage you can't afford to miss.</h1>
+          <p class="description">Discover award-winning coverage with a South China Morning Post subscription plan, <strong>your window to Hong Kong, China, Asia and the world.</strong></p>
+        </div>
+
+        <div class="plan-stack">
+          <div class="plan-toggle-group">
+            <!-- Monthly / Annual tab bar -->
+            <div class="tab-bar" role="group" aria-label="Billing frequency">
+              <button type="button" id="tab-monthly" class="tab-monthly active" aria-pressed="true">Monthly</button>
+              <button type="button" id="tab-annual" class="tab-annual" aria-pressed="false">
+                Annual
+                <span class="save-badge">Save 16%</span>
+              </button>
+            </div>
+
+            <!-- Plan card -->
+            <div class="plan-shell-new">
+              <p class="ribbon-new">Introductory offer</p>
+              <div class="plan-card-new">
+                <div style="width:100%">
+                  <div class="plan-header">
+                    <p class="plan-eyebrow-new">Standard</p>
+                    <span class="best-value-tag" id="best-value-tag">HKD45 FOR THE 1ST MONTH</span>
+                  </div>
+                  <p class="plan-name-new" id="plan-name">Annual</p>
+                </div>
+
+                <div class="price-row-new">
+                  <strong class="price-new" id="price-amount">65</strong>
+                  <div class="price-meta-new">
+                    <s id="price-original">80</s>
+                    <p class="unit"><strong>HKD</strong><span>/month</span></p>
+                  </div>
+                </div>
+
+                <p class="billing-note" id="billing-note">
+                  Billed as <strong>HKD780</strong> for the first year. Then <strong>HKD960/yr</strong>.
+                </p>
+
+                <ul class="benefits-new">
+                  <li>Unlimited access on web and app</li>
+                  <li>Access to archive articles</li>
+                  <li>Listen to articles</li>
+                </ul>
+
+                <a class="subscribe-cta" href="NoPlanSummary.html">Subscribe now</a>
+
+                <p class="cancel-note">Cancel anytime.</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="plan-desc">Get unlimited access on web and app, archived articles, and listening to articles.</p>
+
+          <div class="payment-logos">
+            <img src="assets/subscription-checkout/Payment methods.svg" alt="Accepted payment methods" />
+          </div>
+        </div>
+      </section>
+
+      <section class="plus">
+        <h2>Want deeper China analysis?</h2>
+        <p class="plus-copy">Turn information into actionable intelligence. <strong>SCMP Plus</strong> is designed for business leaders and China watchers who need strategic insights into China's shifting policies and economy. Unlock everything in Standard, plus <strong>FactSheets, Daily Pulse, ePaper &amp; more</strong></p>
+        <div class="plus-options">
+          <article class="plus-card">
+            <header><span>Plus: Monthly</span><small>One month for free</small></header>
+            <div class="plus-price"><strong>190</strong><span><s>261</s><br /><strong>HKD</strong>/month</span><a class="small-cta" href="NoPlanSummary.html">Subscribe</a></div>
+          </article>
+          <article class="plus-card">
+            <header><span>Plus: Annual</span><small>One month for free</small></header>
+            <div class="plus-price"><strong>174</strong><span><s>248</s><br /><strong>HKD</strong>/month</span><a class="small-cta" href="NoPlanSummary.html">Subscribe</a></div>
+          </article>
+        </div>
+        <p class="plus-link">Want to have print newspaper included? <a href="NoPlanSummary.html">Click here</a> for bundle plans.</p>
+        <div class="plus-visual" aria-hidden="true">
+          <img src="assets/subscription-checkout/Plus-visual.png" alt="" />
+        </div>
+      </section>
+
+      <section class="standard-more">
+        <div class="standard-inner">
+          <h2 class="standard-title">Here's what's included in your plan</h2>
+          <div class="feature-grid">
+            <article class="feature">
+              <div class="feature-visual"><img src="assets/subscription-checkout/Visual-5-devices.svg" alt="" /></div>
+              <h3>Read your way with flexible browsing</h3>
+              <p>Full access to scmp.com and our app on up to five devices simultaneously. From desk to commute, read however you choose.</p>
+            </article>
+            <div class="feature-divider" aria-hidden="true"></div>
+            <article class="feature">
+              <div class="feature-visual"><img src="assets/subscription-checkout/Visual-listen.svg" alt="" /></div>
+              <h3>Get news on the move</h3>
+              <p>No time to read? Listen to news on the go with our new AI-powered read aloud option</p>
+            </article>
+            <div class="feature-divider" aria-hidden="true"></div>
+            <article class="feature">
+              <div class="feature-visual"><img src="assets/subscription-checkout/Visual-eDM.svg" alt="" /></div>
+              <h3>Explore handpicked news and views</h3>
+              <p>Receive exclusive newsletters curated by our senior editors, straight to your inbox.</p>
+            </article>
+          </div>
+
+          <div class="faq">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-list">
+              <div class="faq-item">What is SCMP's digital subscription and how can I access it?</div>
+              <div class="faq-item">What are the accepted payment methods?</div>
+              <div class="faq-item">What is SCMP Plus?</div>
+              <div class="faq-item">Can I cancel my subscription anytime?</div>
+              <div class="faq-item">How can I get print paper?</div>
+            </div>
+          </div>
+
+          <div class="corporate-wrap">
+            <a class="corporate-link" href="NoPlanSummary.html">
+              <span>Looking for corporate subscriptions?</span>
+              <img src="assets/subscription-checkout/arrow.svg" alt="" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <img src="assets/subscription-checkout/SCMP-logo-white.svg" alt="South China Morning Post" />
+            <small>© 2026 South China Morning Post all rights reserved.</small>
+          </div>
+          <div class="footer-links">
+            <span>Subscription FAQ</span>
+            <span>About Us</span>
+            <span>Privacy &amp; Policy</span>
+            <span>Terms &amp; Conditions</span>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      const plans = {
+        annual: {
+          name: "Annual",
+          price: "65",
+          original: "80",
+          billing: 'Billed as <strong>HKD780</strong> for the first year. Then <strong>HKD960/yr</strong>.',
+          badge: "BEST VALUE",
+        },
+        monthly: {
+          name: "Monthly",
+          price: "85",
+          original: "85",
+          billing: '<strong>HKD45 for the first month</strong>, then <strong>HKD85/month</strong>.',
+          badge: "HKD45 FOR THE 1ST MONTH",
+        },
+      };
+
+      const tabMonthly = document.getElementById("tab-monthly");
+      const tabAnnual = document.getElementById("tab-annual");
+      const planName = document.getElementById("plan-name");
+      const priceAmount = document.getElementById("price-amount");
+      const priceOriginal = document.getElementById("price-original");
+      const billingNote = document.getElementById("billing-note");
+      const bestValueTag = document.getElementById("best-value-tag");
+
+      function applyPlan(key) {
+        const p = plans[key];
+        planName.textContent = p.name;
+        priceAmount.textContent = p.price;
+        priceOriginal.textContent = p.original;
+        priceOriginal.style.opacity = key === "monthly" ? "0" : "1";
+        billingNote.innerHTML = p.billing;
+        bestValueTag.textContent = p.badge;
+
+        const isAnnual = key === "annual";
+        tabAnnual.classList.toggle("active", isAnnual);
+        tabMonthly.classList.toggle("active", !isAnnual);
+        tabAnnual.setAttribute("aria-pressed", isAnnual);
+        tabMonthly.setAttribute("aria-pressed", !isAnnual);
+      }
+
+      tabAnnual.addEventListener("click", () => applyPlan("annual"));
+      tabMonthly.addEventListener("click", () => applyPlan("monthly"));
+      applyPlan("monthly");
+    </script>
+  </body>
+</html>
